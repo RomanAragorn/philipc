@@ -7,6 +7,7 @@
 
 @theme {
   --color-primary: oklch(0.60 0.22 257.21);
+  --color-neutral: oklch(55.1% 0.027 264.364);
 }
 
 @keyframes pop-blob {
