@@ -6,10 +6,10 @@ import { Product } from '@/app/data/types';
 
 interface ProductProps {
     product: Product;
-    onClick: (product: Product) => void;
+    // onClick: (product: Product) => void;
 }
 
-const Products: React.FC<ProductProps> = ({ product, onClick }) => {
+const Products: React.FC<ProductProps> = ({ product }) => {
     return (
         <div className="flex min-h-50 flex-col rounded-2xl bg-gray-50 p-4 shadow-lg dark:bg-gray-900">
             {/* User */}

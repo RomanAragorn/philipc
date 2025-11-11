@@ -14,12 +14,12 @@ const Home: React.FC = () => {
         <div className="min-h-screen bg-gray-200 dark:bg-gray-800">
             <Navigation />
             {/* Home Page */}
-            <div className="flex flex-col">
+            <div className="mx-3 flex flex-col">
                 <Banner />
                 {/* Recommendations */}
                 <section
                     id="recommendations"
-                    className="mx-auto my-4 max-w-7xl lg:w-7xl"
+                    className="m-4 mx-auto w-full max-w-7xl"
                 >
                     <div className="flex justify-between">
                         <div className="text-black dark:text-white">
@@ -41,7 +41,7 @@ const Home: React.FC = () => {
                                 <Products
                                     key={product.listing_id}
                                     product={product}
-                                    onClick={() => console.log('view')}
+                                    // onClick={() => console.log('view')}
                                 />
                             );
                         })}
@@ -49,7 +49,7 @@ const Home: React.FC = () => {
                 </section>
                 <section
                     id="categories"
-                    className="mx-auto my-4 max-w-7xl"
+                    className="mx-auto my-4 w-full max-w-7xl"
                 >
                     <div className="flex justify-between">
                         <div className="text-black dark:text-white">

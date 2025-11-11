@@ -13,7 +13,7 @@ const ThemeToggle: React.FC = () => {
     return (
         <button
             onClick={() => setDark(!dark)}
-            className="mx-auto p-2 text-sm dark:text-white"
+            className="mx-auto p-2 text-sm text-white"
         >
             {dark ? <Sun /> : <Moon />}
         </button>
