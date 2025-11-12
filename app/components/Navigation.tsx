@@ -56,7 +56,7 @@ const Navigation: React.FC = () => {
                         <div className="relative hidden md:inline">
                             <button
                                 onClick={() => setUserMenuOpen(!userMenuOpen)}
-                                className="items-cente flex text-white hover:text-blue-400"
+                                className="flex items-center text-white hover:text-blue-400"
                             >
                                 <CircleUser
                                     className={`ms-1 h-8 w-8 transition-transform duration-200`}

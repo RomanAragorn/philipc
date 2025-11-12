@@ -33,7 +33,7 @@ const RootLayout: React.FC<{ children: React.ReactNode }> = ({
             className={`${poppins.variable} scrollable`}
         >
             <body
-                className={`${geistSans.variable} ${geistMono.variable} ${poppins.className} anscrotialiased`}
+                className={`${geistSans.variable} ${geistMono.variable} ${poppins.className} ansialiased`}
             >
                 {children}
             </body>
