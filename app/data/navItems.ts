@@ -1,15 +1,16 @@
-import { Keyboard, Monitor, Mouse } from 'lucide-react';
+import { Cpu, Gpu, MemoryStick, HardDrive, Keyboard } from 'lucide-react';
 
 export const navItems = [
-    { id: 'keyboard', label: 'Keyboards', href: '/#', icon: Keyboard },
-    { id: 'mouse', label: 'Mouse', href: '/#', icon: Mouse },
-    { id: 'monitor', label: 'Monitors', href: '/#', icon: Monitor },
+    { id: 'cpu', label: 'CPU', href: '/#', icon: Cpu },
+    { id: 'gpu', label: 'GPU', href: '/#', icon: Gpu },
+    { id: 'ram', label: 'RAM', href: '/#', icon: MemoryStick },
+    { id: 'memory', label: 'Memory', href: '/#', icon: HardDrive },
+    { id: 'peripherals', label: 'Peripherals', href: '/#', icon: Keyboard },
 ];
 
 export const moreItems = [
-    { id: 'ram', label: 'RAM', href: '/#' },
-    { id: 'ssd', label: 'SSD', href: '/#' },
-    { id: 'hardDrive', label: 'Hard Drives', href: '/#' },
+    { id: 'monitors', label: 'Monitors', href: '/#' },
+    { id: 'miscellaneous', label: 'Miscellaneous', href: '/#' },
 ];
 
 export interface NavItem {
