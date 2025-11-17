@@ -27,11 +27,12 @@ DROP TABLE IF EXISTS `item`;
 CREATE TABLE `item` (
   `listing_id` int NOT NULL AUTO_INCREMENT,
   `seller_id` int NOT NULL,
+  `category` enum('CPU','GPU','RAM','Memory','Peripherals','Monitors','Miscellaneous') NOT NULL,
   `item_name` varchar(200) NOT NULL,
-  `item_price` decimal(10,2) NOT NULL,
-  `item_location` varchar(100) NOT NULL,
   `item_condition` enum('Brand New','Like New','Slightly Used','Well Used','Heavily Used') NOT NULL,
+  `item_price` decimal(10,2) NOT NULL,
   `item_description` text,
+  `item_location` varchar(100) NOT NULL,
   `is_avail` tinyint(1) DEFAULT '1',
   PRIMARY KEY (`listing_id`),
   KEY `fk_seller_user` (`seller_id`),
@@ -118,10 +119,13 @@ CREATE TABLE `users` (
   `last_name` varchar(80) NOT NULL,
   `email` varchar(150) NOT NULL,
   `contact_no` varchar(10) NOT NULL,
+  `username` varchar(150) NOT NULL,
+  `password` varchar(255) NOT NULL,
   `fb_link` varchar(150) DEFAULT NULL,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `email` (`email`),
-  UNIQUE KEY `contact_no` (`contact_no`)
+  UNIQUE KEY `contact_no` (`contact_no`),
+  UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -151,4 +155,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-11-10 14:52:25
+-- Dump completed on 2025-11-17 22:19:25
