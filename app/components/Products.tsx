@@ -6,21 +6,24 @@ import { Product } from '@/app/data/types';
 
 interface ProductProps {
     product: Product;
+    showUser?: boolean;
     // onClick: (product: Product) => void;
 }
 
-const Products: React.FC<ProductProps> = ({ product }) => {
+const Products: React.FC<ProductProps> = ({ product, showUser = true }) => {
     return (
         <div className="flex min-h-50 flex-col rounded-2xl bg-gray-50 p-4 shadow-lg dark:bg-gray-900">
             {/* User */}
-            <div className="mb-3 flex items-center gap-2">
-                <div className="rounded-4xl bg-blue-50 p-2">
-                    <User className="h-8 w-8 text-black" />
+            {showUser && (
+                <div className="mb-3 flex items-center gap-2">
+                    <div className="rounded-4xl bg-blue-50 p-2">
+                        <User className="h-8 w-8 text-black" />
+                    </div>
+                    <span className="text-black dark:text-white">
+                        {product.fname} {product.lname}
+                    </span>
                 </div>
-                <span className="text-black dark:text-white">
-                    {product.fname} {product.lname}
-                </span>
-            </div>
+            )}
 
             {/* Image */}
             <div className="relative h-50 w-full">

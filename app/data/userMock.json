@@ -1,0 +1,83 @@
+[
+    {
+        "id": 1,
+        "username": "annasantos",
+        "first_name": "Anna",
+        "last_name": "Santos",
+        "name": "Anna Santos",
+        "avatar": "https://randomuser.me/api/portraits/women/44.jpg",
+        "bio": "Passionate seller of vintage items",
+        "location": "Quezon City",
+        "rating": 4.7,
+        "listings": [
+            {
+                "listing_id": 101,
+                "item_name": "Vintage Camera",
+                "item_price": 1500,
+                "item_location": "Quezon City",
+                "condition": "Used - Good",
+                "description": "A vintage 35mm camera in great condition",
+                "still_avail": true,
+                "image": "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-1.jpg"
+            },
+            {
+                "listing_id": 102,
+                "item_name": "Antique Clock",
+                "item_price": 3000,
+                "item_location": "Quezon City",
+                "condition": "Used - Excellent",
+                "description": "Classic antique wall clock",
+                "still_avail": false,
+                "image": "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-2.jpg"
+            }
+        ],
+        "reviews": [
+            {
+                "id": 1,
+                "reviewer": "Bob",
+                "rating": 5,
+                "comment": "Great seller, fast response!",
+                "date": "2025-11-01"
+            },
+            {
+                "id": 2,
+                "reviewer": "Alice",
+                "rating": 4,
+                "comment": "Item as described, smooth transaction.",
+                "date": "2025-10-28"
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "username": "johnrivera",
+        "first_name": "John",
+        "last_name": "Rivera",
+        "name": "John Rivera",
+        "avatar": "https://randomuser.me/api/portraits/men/35.jpg",
+        "bio": "Collector and seller of electronics",
+        "location": "Makati",
+        "rating": 3.2,
+        "listings": [
+            {
+                "listing_id": 103,
+                "item_name": "Gaming Console",
+                "item_price": 12000,
+                "item_location": "Makati",
+                "condition": "New",
+                "description": "Latest gaming console unopened",
+                "still_avail": true,
+                "image": "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-3.jpg"
+            }
+        ],
+        "reviews": [
+            {
+                "id": 3,
+                "reviewer": "Charlie",
+                "rating": 5,
+                "comment": "Highly recommended seller!",
+                "date": "2025-11-10"
+            }
+        ]
+    }
+]
