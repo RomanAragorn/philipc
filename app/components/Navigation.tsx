@@ -54,15 +54,31 @@ const Navigation: React.FC = () => {
 
                         {/* Dekstop User Icon */}
                         <div className="relative hidden md:inline">
-                            <button
+                            {/* <button
                                 onClick={() => setUserMenuOpen(!userMenuOpen)}
                                 className="flex items-center text-white hover:text-blue-400"
                             >
                                 <CircleUser
                                     className={`ms-1 h-8 w-8 transition-transform duration-200`}
                                 />
-                            </button>
-
+                            </button> */}
+                            <div className="flex items-center justify-center gap-2 text-white">
+                                <Link
+                                    type="button"
+                                    className="hover:text-dark-primary text-xs text-nowrap text-white hover:cursor-pointer"
+                                    href={'/signup'}
+                                >
+                                    Sign Up
+                                </Link>
+                                <div className="text-xs">|</div>
+                                <Link
+                                    type="button"
+                                    className="hover:text-dark-primary text-xs text-nowrap text-white hover:cursor-pointer"
+                                    href={'/login'}
+                                >
+                                    Log In
+                                </Link>
+                            </div>
                             {/* Desktop User Menu */}
                             {userMenuOpen && (
                                 <ul className="absolute right-0 z-50 mt-2 w-50 rounded-md border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800">
@@ -70,7 +86,7 @@ const Navigation: React.FC = () => {
                                         <li key={userSettings.id}>
                                             <Link
                                                 href="/user/profile"
-                                                className="block px-4 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                                                className="block px-4 py-2 text-gray-900 hover:cursor-pointer hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                                             >
                                                 <div className="font-semibold">
                                                     {userSettings.label}
@@ -96,21 +112,21 @@ const Navigation: React.FC = () => {
                     </div>
 
                     {/* Mobile User Icon */}
-                    <button
+                    {/* <button
                         onClick={() => setUserMenuOpen(!userMenuOpen)}
                         className="me-1 p-2.5 text-gray-500 md:hidden dark:text-gray-400"
                     >
                         <CircleUser className="h-8 w-8 text-white" />
-                    </button>
+                    </button> */}
                 </div>
 
                 {/* Dekstop Nav Items */}
                 <div
-                    className={`hidden w-full items-center justify-between md:order-1 md:flex md:w-auto`}
+                    className={`hidden w-full items-center justify-between md:order-1 md:w-auto lg:flex`}
                     id="navbar-search"
                 >
                     {/* Navigation Items */}
-                    <ul className="mt-4 flex rounded-lg p-4 font-medium md:mt-0 md:space-x-1 md:border-0 md:p-0 lg:space-x-6">
+                    <ul className="mt-4 flex rounded-lg p-4 font-medium md:mt-0 md:space-x-1 md:border-0 md:p-0 lg:space-x-2 xl:space-x-6">
                         {navItems.map((item: NavItem) => {
                             return (
                                 <li key={item.id}>
