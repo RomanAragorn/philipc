@@ -140,7 +140,7 @@ const ProductDetailPage: React.FC = () => {
                     </h1>
                     <button
                         onClick={() => router.push('/products')}
-                        className="text-blue-600 hover:text-blue-700"
+                        className="text-primary hover:text-blue-700"
                     >
                         Back to Products
                     </button>
@@ -240,7 +240,7 @@ const ProductDetailPage: React.FC = () => {
                         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
                             {product.item_name}
                         </h1>
-                        <p className="mt-2 text-4xl font-bold text-blue-600">
+                        <p className="text-primary mt-2 text-4xl font-bold">
                             ₱{product.item_price.toLocaleString()}
                         </p>
 
@@ -257,7 +257,7 @@ const ProductDetailPage: React.FC = () => {
 
                         {/* Actions */}
                         <div className="flex space-x-4">
-                            <button className="flex-1 rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700">
+                            <button className="bg-primary flex-1 rounded-lg px-6 py-3 font-semibold text-white hover:bg-blue-700 dark:bg-blue-600">
                                 Contact Seller
                             </button>
                             <button className="rounded-lg border border-gray-300 p-3 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-800">
@@ -280,7 +280,7 @@ const ProductDetailPage: React.FC = () => {
 
                         {/* Safety Tips */}
                         <div className="flex items-start space-x-2 rounded-lg bg-blue-50 p-4 dark:bg-blue-900/20">
-                            <Shield className="mt-0.5 h-5 w-5 text-blue-600" />
+                            <Shield className="text-primary mt-0.5 h-5 w-5" />
                             <div>
                                 <h4 className="font-medium text-blue-900 dark:text-blue-300">
                                     Safety Tips
@@ -344,7 +344,7 @@ const ProductDetailPage: React.FC = () => {
                                 </p>
                             </div>
                             <Link
-                                className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700"
+                                className="bg-primary rounded-lg px-4 py-2 font-medium text-white hover:bg-blue-700 dark:bg-blue-600"
                                 href={`/users/${product.seller.username}`}
                             >
                                 View Profile

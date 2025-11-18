@@ -13,7 +13,7 @@ interface ProductProps {
 
 const Products: React.FC<ProductProps> = ({ product, showUser = true }) => {
     return (
-        <div className="flex min-h-50 flex-col rounded-2xl bg-gray-50 p-4 shadow-lg dark:bg-gray-900">
+        <div className="flex min-h-50 flex-col rounded-2xl bg-gray-50 p-4 shadow-lg dark:bg-gray-800">
             {/* User */}
             {showUser && (
                 <div className="mb-3 flex items-center gap-2">
