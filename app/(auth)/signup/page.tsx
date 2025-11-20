@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useActionState } from 'react';
-import { signup } from '../signup/actions'
+import { signup } from '../signup/actions';
 import Link from 'next/link';
 
 const SignupPage: React.FC = () => {

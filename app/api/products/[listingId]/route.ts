@@ -1,11 +1,11 @@
-import { getSpecificProduct } from "@/app/lib/specificProduct";
+import { getSpecificProduct } from '@/app/lib/specificProduct';
 
-export async function GET(req, {params}) {
-  const {listingId} = await params;
+export async function GET(req, { params }) {
+    const { listingId } = await params;
 
-  console.log(listingId);
+    console.log(listingId);
 
-  const product = await getSpecificProduct(listingId);
+    const product = await getSpecificProduct(listingId);
 
-  return Response.json(product);
+    return Response.json(product);
 }

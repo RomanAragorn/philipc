@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useActionState } from 'react';
-import Link from 'next/link'
-import { login } from "./actions";
+import Link from 'next/link';
+import { login } from './actions';
 
 const LoginPage: React.FC = () => {
     const [username, setUsername] = useState('');
