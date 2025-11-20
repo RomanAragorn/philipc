@@ -11,7 +11,7 @@ import Footer from '@/app/components/Footer';
 
 const Home: React.FC = () => {
     return (
-        <div className="min-h-screen bg-gray-200 dark:bg-gray-800">
+        <div className="min-h-screen bg-gray-200 dark:bg-gray-900">
             <Navigation />
             {/* Home Page */}
             <div className="mx-3 flex flex-col">
@@ -27,7 +27,7 @@ const Home: React.FC = () => {
                         </div>
                         <div className="">
                             <Link
-                                href={'#'}
+                                href={'/products'}
                                 className="text-primary flex hover:text-blue-700 hover:underline"
                             >
                                 View All

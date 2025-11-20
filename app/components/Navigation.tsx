@@ -8,10 +8,30 @@ import { userSettings } from '@/app/data/userSettings';
 import Button from '@/app/components/Button';
 import { Search, ChevronDown, CircleUser } from 'lucide-react';
 import ThemeToggle from '@/app/components/ThemeToggle';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 const Navigation: React.FC = () => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [userMenuOpen, setUserMenuOpen] = useState(false);
+
+    const router = useRouter();
+    const searchParams = useSearchParams();
+
+    const initialSearch = searchParams.get('search') || '';
+    const [search, setSearch] = useState(initialSearch);
+
+    const handleSubmit = (e: React.FormEvent): void => {
+        e.preventDefault();
+
+        const params = new URLSearchParams(searchParams.toString());
+        if (search) {
+            params.set('search', search);
+        } else {
+            params.delete('search');
+        }
+
+        router.push(`/products${params.toString() ? `?${params.toString()}` : ''}`);
+    };
 
     return (
         <nav className="sticky top-0 right-0 left-0 z-999 border-gray-200 bg-linear-to-r from-[#003d4d]/85 to-[#0081b3]/85 shadow-xl backdrop-blur-2xl dark:from-gray-900 dark:to-gray-900">
@@ -40,11 +60,15 @@ const Navigation: React.FC = () => {
                             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                                 <Search className="w-5 text-gray-400" />
                             </div>
-                            <input
-                                type="text"
-                                placeholder="Search..."
-                                className="block rounded-lg border border-gray-300 bg-gray-50 p-2 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:w-30 lg:w-40 xl:w-60 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                            />
+                            <form onSubmit={handleSubmit}>
+                                <input
+                                    type="text"
+                                    placeholder="Search..."
+                                    value={search}
+                                    className="block rounded-lg border border-gray-300 bg-gray-50 p-2 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 md:w-30 lg:w-40 xl:w-60 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                                    onChange={(e) => setSearch(e.target.value)}
+                                />
+                            </form>
                         </div>
 
                         {/* Desktop Sell Button */}

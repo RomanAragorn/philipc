@@ -15,7 +15,7 @@
                 "item_name": "Vintage Camera",
                 "item_price": 1500,
                 "item_location": "Quezon City",
-                "condition": "Used - Good",
+                "condition": "Brand New",
                 "description": "A vintage 35mm camera in great condition",
                 "still_avail": true,
                 "image": "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-1.jpg"
@@ -25,7 +25,7 @@
                 "item_name": "Antique Clock",
                 "item_price": 3000,
                 "item_location": "Quezon City",
-                "condition": "Used - Excellent",
+                "condition": "Heavily Used",
                 "description": "Classic antique wall clock",
                 "still_avail": false,
                 "image": "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-2.jpg"
@@ -64,7 +64,7 @@
                 "item_name": "Gaming Console",
                 "item_price": 12000,
                 "item_location": "Makati",
-                "condition": "New",
+                "condition": "Brand New",
                 "description": "Latest gaming console unopened",
                 "still_avail": true,
                 "image": "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-3.jpg"

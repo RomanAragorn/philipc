@@ -3,6 +3,7 @@ import { User } from 'lucide-react';
 import Image from 'next/image';
 import Button from '@/app/components/Button';
 import { Product } from '@/app/data/types';
+import Link from 'next/link';
 
 interface ProductProps {
     product: Product;
@@ -12,7 +13,7 @@ interface ProductProps {
 
 const Products: React.FC<ProductProps> = ({ product, showUser = true }) => {
     return (
-        <div className="flex min-h-50 flex-col rounded-2xl bg-gray-50 p-4 shadow-lg dark:bg-gray-900">
+        <div className="flex min-h-50 flex-col rounded-2xl bg-gray-50 p-4 shadow-lg dark:bg-gray-800">
             {/* User */}
             {showUser && (
                 <div className="mb-3 flex items-center gap-2">
@@ -44,7 +45,12 @@ const Products: React.FC<ProductProps> = ({ product, showUser = true }) => {
 
             {/* Button */}
             <div className="flex justify-center">
-                <Button label="View Product" />
+                <Link
+                    href={`/products/${product.listing_id}`}
+                    className="w-full"
+                >
+                    <Button label="View Product" />
+                </Link>
             </div>
         </div>
     );
