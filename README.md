@@ -4,8 +4,8 @@ A modern ecommerce application built with **Next.js 14+ (App Router)**, React 19
 
 ## 📋 Prerequisites
 
-  - [Node.js](https://nodejs.org/) v18+
-  - [Git](https://git-scm.com/)
+- [Node.js](https://nodejs.org/) v18+
+- [Git](https://git-scm.com/)
 
 ## 📁 Project Structure
 
@@ -95,9 +95,9 @@ SUPABASE_SERVICE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 > ⚠️ **IMPORTANT SECURITY NOTES:**
 >
->   - **NEVER** commit `.env.local` files to Git.
->   - Variables prefixed with `NEXT_PUBLIC_` are "public" and can be seen in the browser.
->   - Variables **without** the prefix (like `SUPABASE_SERVICE_KEY`) are **server-side only** and are **never** exposed to the browser. This is how Next.js replaces your old `server` folder.
+> - **NEVER** commit `.env.local` files to Git.
+> - Variables prefixed with `NEXT_PUBLIC_` are "public" and can be seen in the browser.
+> - Variables **without** the prefix (like `SUPABASE_SERVICE_KEY`) are **server-side only** and are **never** exposed to the browser. This is how Next.js replaces your old `server` folder.
 
 ### Step 4: Run the Application
 
@@ -122,19 +122,19 @@ Open your browser and go to:
 http://localhost:3000
 ```
 
------
+---
 
 ## 🔐 Environment Variables Reference
 
 All variables live in `.env.local` at the project root.
 
-| Variable                       | Description                         | Used On             | Required |
-| :------------------------------- | :--------------------------------------- | :------------------ | :------- |
-| `NEXT_PUBLIC_SUPABASE_URL`       | Your Supabase project URL              | **Client** (Browser) | ✅ Yes   |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY`  | Supabase anonymous/public key          | **Client** (Browser) | ✅ Yes   |
-| `SUPABASE_SERVICE_KEY`           | Supabase service role key (keep secret\!) | **Server** (Next.js) | ✅ Yes   |
+| Variable                          | Description                               | Used On              | Required |
+| :-------------------------------- | :---------------------------------------- | :------------------- | :------- |
+| `NEXT_PUBLIC_SUPABASE_URL`        | Your Supabase project URL                 | **Client** (Browser) | ✅ Yes   |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY`   | Supabase anonymous/public key             | **Client** (Browser) | ✅ Yes   |
+| `SUPABASE_SERVICE_KEY`            | Supabase service role key (keep secret\!) | **Server** (Next.js) | ✅ Yes   |
 
------
+---
 
 ## 🤝 Contributing
 
@@ -160,36 +160,36 @@ We follow the [Conventional Commits](https://www.conventionalcommits.org/) speci
 
 #### Types
 
-  - **feat**: A new feature
-      - `feat(auth): add user login functionality`
-      - `feat(cart): implement add to cart feature`
-  - **fix**: A bug fix
-      - `fix(checkout): resolve payment processing error`
-      - `fix(products): correct price display formatting`
-  - **docs**: Documentation only changes
-      - `docs(readme): update installation instructions`
-      - `docs(api): add endpoint documentation`
-  - **style**: Changes that don't affect code meaning (formatting, missing semi-colons, etc.)
-      - `style(client): format code with prettier`
-      - `style(components): fix indentation`
-  - **refactor**: Code change that neither fixes a bug nor adds a feature
-      - `refactor(api): simplify product service logic`
-      - `refactor(hooks): extract custom hook for cart`
-  - **perf**: Performance improvements
-      - `perf(products): optimize product list rendering`
-      - `perf(api): add database query caching`
-  - **test**: Adding or correcting tests
-      - `test(auth): add unit tests for login`
-      - `test(cart): add integration tests`
-  - **build**: Changes to build system or dependencies
-      - `build(deps): upgrade react to v19`
-      - `build(client): update vite config`
-  - **ci**: Changes to CI configuration files and scripts
-      - `ci(github): add deployment workflow`
-      - `ci(vercel): update build settings`
-  - **chore**: Other changes that don't modify src or test files
-      - `chore(git): update .gitignore`
-      - `chore(deps): update dependencies`
+- **feat**: A new feature
+    - `feat(auth): add user login functionality`
+    - `feat(cart): implement add to cart feature`
+- **fix**: A bug fix
+    - `fix(checkout): resolve payment processing error`
+    - `fix(products): correct price display formatting`
+- **docs**: Documentation only changes
+    - `docs(readme): update installation instructions`
+    - `docs(api): add endpoint documentation`
+- **style**: Changes that don't affect code meaning (formatting, missing semi-colons, etc.)
+    - `style(client): format code with prettier`
+    - `style(components): fix indentation`
+- **refactor**: Code change that neither fixes a bug nor adds a feature
+    - `refactor(api): simplify product service logic`
+    - `refactor(hooks): extract custom hook for cart`
+- **perf**: Performance improvements
+    - `perf(products): optimize product list rendering`
+    - `perf(api): add database query caching`
+- **test**: Adding or correcting tests
+    - `test(auth): add unit tests for login`
+    - `test(cart): add integration tests`
+- **build**: Changes to build system or dependencies
+    - `build(deps): upgrade react to v19`
+    - `build(client): update vite config`
+- **ci**: Changes to CI configuration files and scripts
+    - `ci(github): add deployment workflow`
+    - `ci(vercel): update build settings`
+- **chore**: Other changes that don't modify src or test files
+    - `chore(git): update .gitignore`
+    - `chore(deps): update dependencies`
 
 #### Examples
 
@@ -211,17 +211,17 @@ git commit -m "docs(readme): add git commit convention section"
 3.  **No period** at the end of the subject line
 4.  **Limit subject line** to 50-72 characters
 
------
+---
 
 ## 📚 Additional Resources
 
-  - [Next.js Documentation](https://nextjs.org/docs)
-  - [Supabase Documentation](https://supabase.com/docs)
-  - [Supabase Next.js Auth Helpers](https://supabase.com/docs/guides/auth/server-side/nextjs)
-  - [React Documentation](https://react.dev)
-  - [Tailwind CSS Documentation](https://tailwindcss.com/docs)
-  - [TypeScript Documentation](https://www.typescriptlang.org/docs)
-  - [Conventional Commits](https://www.conventionalcommits.org/)
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Supabase Documentation](https://supabase.com/docs)
+- [Supabase Next.js Auth Helpers](https://supabase.com/docs/guides/auth/server-side/nextjs)
+- [React Documentation](https://react.dev)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [TypeScript Documentation](https://www.typescriptlang.org/docs)
+- [Conventional Commits](https://www.conventionalcommits.org/)
 
 ## 📝 License
 
