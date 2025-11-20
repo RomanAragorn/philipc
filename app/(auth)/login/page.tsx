@@ -1,12 +1,14 @@
 'use client';
 
-import { useState } from 'react';
-import Link from 'next/link';
+import { useState, useActionState } from 'react';
+import Link from 'next/link'
+import { login } from "./actions";
 
 const LoginPage: React.FC = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [isRemembered, setIsRemembered] = useState(false);
+    const [state, action] = useActionState(login, undefined);
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
