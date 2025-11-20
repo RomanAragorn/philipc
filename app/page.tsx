@@ -1,16 +1,37 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Banner from '@/app/components/HomeBanner';
 import Navigation from '@/app/components/Navigation';
 import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
-import products from '@/app/data/productMock.json';
 import Products from '@/app/components/Products';
 import CategoriesList from '@/app/components/CategoriesList';
 import Footer from '@/app/components/Footer';
+import { Product as ProductType } from '@/app/data/types';
 
 const Home: React.FC = () => {
+    const [products, setProducts] = useState<ProductType[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchProducts = async (): Promise<void> => {
+            try {
+                const res = await fetch('api/products');
+                if (!res.ok) throw new Error('Failed to Fetch');
+                const data = await res.json();
+                console.log(data)
+                setProducts(data);
+            } catch (error) {
+                console.log(error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProducts();
+    }, []);
+
     return (
         <div className="min-h-screen bg-gray-200 dark:bg-gray-900">
             <Navigation />
@@ -36,13 +57,13 @@ const Home: React.FC = () => {
                             </Link>
                         </div>
                     </div>
-                    <div className="mb-4 grid grid-flow-row gap-5 p-5 md:grid-cols-2 lg:grid-cols-3">
+                    <div className="mb-4 grid grid-flow-row gap-5 p-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        {loading && <p>Loading...</p>}
                         {products.map((product) => {
                             return (
                                 <Products
                                     key={product.listing_id}
                                     product={product}
-                                    // onClick={() => console.log('view')}
                                 />
                             );
                         })}

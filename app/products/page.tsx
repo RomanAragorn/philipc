@@ -1,10 +1,9 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Products from '@/app/components/Products';
 import Navigation from '@/app/components/Navigation';
 import Dropdown from '@/app/components/Dropdown';
-import userMock from '@/app/data/userMock.json';
 import { Product as ProductType } from '@/app/data/types';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { sortOptions, conditionOptions } from '@/app/data/searchFilters';
@@ -16,66 +15,59 @@ const ProductsPage: React.FC = () => {
     const searchParams = useSearchParams();
     const router = useRouter();
 
+    // Read query params or set defaults
     const searchQuery = searchParams.get('search') || '';
     const conditionQuery = searchParams.get('condition') || '';
-    const minPriceQuery = searchParams.get('minPrice') || '';
-    const maxPriceQuery = searchParams.get('maxPrice') || '';
-    const sortQuery = searchParams.get('sort') || 'asc';
+    const minPriceQuery = searchParams.get('minPrice') || '0';
+    const maxPriceQuery = searchParams.get('maxPrice') || '50000';
+    const sortQuery = searchParams.get('sort') || '';
 
-    // FOR MOCK DATA ONLY
     const [condition, setCondition] = useState(conditionQuery);
     const [minPrice, setMinPrice] = useState(minPriceQuery);
     const [maxPrice, setMaxPrice] = useState(maxPriceQuery);
     const [sort, setSort] = useState(sortQuery);
 
-    const filteredProducts: ProductType[] = useMemo(() => {
-        let allProducts: ProductType[] = userMock.flatMap((user) =>
-            user.listings.map((item) => ({
-                ...item,
-                fname: user.first_name,
-                lname: user.last_name,
-            }))
-        );
+    const [products, setProducts] = useState<ProductType[]>([]);
 
-        if (searchQuery) {
-            allProducts = allProducts.filter((p) =>
-                p.item_name.toLowerCase().includes(searchQuery.toLowerCase())
-            );
-        }
+    useEffect(() => {
+        const fetchProducts = async (): Promise<void> => {
+            try {
+                const params = new URLSearchParams();
+                if (searchQuery) params.set('search', searchQuery);
+                if (condition) params.set('condition', condition);
+                if (minPrice) params.set('minPrice', minPrice);
+                if (maxPrice) params.set('maxPrice', maxPrice);
+                if (sort) params.set('sort', sort);
 
-        if (conditionQuery) {
-            allProducts = allProducts.filter((p) => p.condition === conditionQuery);
-        }
+                const res = await fetch(`/api/products?${params.toString()}`);
+                if (!res.ok) throw new Error('Failed to fetch products');
 
-        if (minPriceQuery) {
-            allProducts = allProducts.filter((p) => p.item_price >= parseFloat(minPriceQuery));
-        }
+                const data = await res.json();
+                setProducts(data || []);
+            } catch (error) {
+                console.error(error);
+                setProducts([]);
+            }
+        };
 
-        if (maxPriceQuery) {
-            allProducts = allProducts.filter((p) => p.item_price <= parseFloat(maxPriceQuery));
-        }
+        fetchProducts();
+    }, [searchQuery, condition, minPrice, maxPrice, sort]);
 
-        if (sortQuery === 'desc') {
-            allProducts = allProducts.sort((a, b) => b.item_price - a.item_price);
-        } else {
-            allProducts = allProducts.sort((a, b) => a.item_price - b.item_price);
-        }
-
-        return allProducts;
-    }, [searchQuery, conditionQuery, minPriceQuery, maxPriceQuery, sortQuery]);
+    // Frontend filtering, to be changed
+    const filteredProducts = useMemo(() => {
+        return products;
+    }, [products]);
 
     const handleFilterSubmit = (e: React.FormEvent): void => {
         e.preventDefault();
-        const params = new URLSearchParams(searchParams.toString());
-        if (condition && condition !== '') {
-            params.set('condition', condition);
-        } else {
-            params.delete('condition');
-        }
 
+        const params = new URLSearchParams();
+        if (condition) params.set('condition', condition);
         if (minPrice) params.set('minPrice', minPrice);
         if (maxPrice) params.set('maxPrice', maxPrice);
         if (sort) params.set('sort', sort);
+
+        if (searchQuery) params.set('search', searchQuery);
 
         router.push(`/products?${params.toString()}`);
     };
