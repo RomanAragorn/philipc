@@ -2,6 +2,7 @@
 
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/react';
 import { ChevronsUpDown, CheckIcon } from 'lucide-react';
+import React from 'react';
 
 interface DropdownProps {
     label: string;

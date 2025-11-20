@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import Navigation from '@/app/components/Navigation';
 import userMock from '@/app/data/userMock.json';

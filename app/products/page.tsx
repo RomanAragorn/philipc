@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import Products from '@/app/components/Products';
 import Navigation from '@/app/components/Navigation';
 import Dropdown from '@/app/components/Dropdown';

@@ -22,6 +22,7 @@ export default defineConfig([
             'prettier/prettier': 'warn',
             '@typescript-eslint/explicit-function-return-type': 'warn',
             '@typescript-eslint/no-explicit-any': 'warn',
+            'no-undef': 'error',
         },
     },
     globalIgnores(['.next/**', 'out/**', 'build/**', 'next-env.d.ts']),

@@ -1,4 +1,5 @@
 import { Cpu, Gpu, MemoryStick, HardDrive, Keyboard } from 'lucide-react';
+import React from 'react';
 
 export const navItems = [
     { id: 'cpu', label: 'CPU', href: '/#', icon: Cpu },

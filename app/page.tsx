@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import Banner from '@/app/components/HomeBanner';
 import Navigation from '@/app/components/Navigation';
 import { ChevronRight } from 'lucide-react';

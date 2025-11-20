@@ -1,14 +1,12 @@
 'use client';
 
-import { useState, useActionState } from 'react';
-import { signup } from '../signup/actions';
+import React, { useState } from 'react';
 import Link from 'next/link';
 
 const SignupPage: React.FC = () => {
     const [fullName, setFullname] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [state, action] = useActionState(signup, undefined);
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
@@ -39,7 +37,6 @@ const SignupPage: React.FC = () => {
                             placeholder=" "
                             className="focus:outline-primary focus:border-primary peer z-5 block w-full rounded-md border border-gray-300 bg-transparent px-2 py-2.5 pt-5 text-sm text-gray-900 shadow-sm hover:cursor-text focus:ring-0"
                         />
-                        {state?.errors?.name && <p>{state.errors.name}</p>}
                         <label
                             htmlFor="fullName"
                             className="text-neutral peer-focus:text-primary absolute top-3 z-10 origin-left -translate-y-2 scale-75 transform px-3 text-sm duration-300 peer-placeholder-shown:translate-y-1 peer-placeholder-shown:scale-100 peer-focus:start-0 peer-focus:-translate-y-2 peer-focus:scale-75 hover:cursor-text rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4 peer-focus:dark:text-blue-500"
@@ -61,7 +58,6 @@ const SignupPage: React.FC = () => {
                             placeholder=" "
                             className="focus:outline-primary focus:border-primary peer z-5 block w-full rounded-md border border-gray-300 bg-transparent px-2 py-2.5 pt-5 text-sm text-gray-900 shadow-sm hover:cursor-text focus:ring-0"
                         />
-                        {state?.errors?.email && <p>{state.errors.email}</p>}
                         <label
                             htmlFor="username"
                             className="text-neutral peer-focus:text-primary absolute top-3 z-10 origin-left -translate-y-2 scale-75 transform px-3 text-sm duration-300 peer-placeholder-shown:translate-y-1 peer-placeholder-shown:scale-100 peer-focus:start-0 peer-focus:-translate-y-2 peer-focus:scale-75 hover:cursor-text rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4 peer-focus:dark:text-blue-500"
@@ -83,7 +79,6 @@ const SignupPage: React.FC = () => {
                             placeholder=" "
                             className="focus:outline-primary focus:border-primary peer block w-full rounded-md border border-gray-300 bg-transparent px-2 py-2.5 pt-5 text-sm text-gray-900 shadow-sm focus:ring-0"
                         />
-                        {state?.errors?.password && <p>{state.errors.password}</p>}
                         <label
                             htmlFor="password"
                             className="text-neutral peer-focus:text-primary absolute top-3 -z-10 origin-left -translate-y-2 scale-75 transform px-3 text-sm duration-300 peer-placeholder-shown:translate-y-1 peer-placeholder-shown:scale-100 peer-focus:start-0 peer-focus:-translate-y-2 peer-focus:scale-75 rtl:peer-focus:left-auto rtl:peer-focus:translate-x-1/4 peer-focus:dark:text-blue-500"
