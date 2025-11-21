@@ -8,7 +8,6 @@ import Link from 'next/link';
 interface ProductProps {
     product: Product;
     showUser?: boolean;
-    // onClick: (product: Product) => void;
 }
 
 const Products: React.FC<ProductProps> = ({ product, showUser = true }) => {
@@ -20,25 +19,25 @@ const Products: React.FC<ProductProps> = ({ product, showUser = true }) => {
                     <div className="rounded-4xl bg-blue-50 p-2">
                         <User className="h-8 w-8 text-black" />
                     </div>
-                    <span className="text-black dark:text-white">
-                        {product.fname} {product.lname}
-                    </span>
+                    <span className="text-black dark:text-white">{product.full_name}</span>
                 </div>
             )}
 
             {/* Image */}
             <div className="relative h-50 w-full">
                 <Image
-                    src={
-                        'https://down-ph.img.susercontent.com/file/ph-11134207-7r98v-lvk7ew0vuxfp28_tn.webp'
-                    }
+                    src={`${
+                        product.image_url
+                            ? product.image_url
+                            : 'https://down-ph.img.susercontent.com/file/ph-11134207-7r98v-lvk7ew0vuxfp28_tn.webp'
+                    }`}
                     alt="Test Image"
                     fill
                 />
             </div>
 
             {/* Product Details */}
-            <div className="my-3 flex grow flex-col gap-1 text-black dark:text-white">
+            <div className="my-3 flex grow flex-col justify-between gap-1 text-black dark:text-white">
                 <span className="text-lg font-semibold">{product.item_name}</span>
                 <span>${product.item_price}</span>
             </div>
