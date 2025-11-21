@@ -39,7 +39,7 @@ const Products: React.FC<ProductProps> = ({ product, showUser = true }) => {
             {/* Product Details */}
             <div className="my-3 flex grow flex-col justify-between gap-1 text-black dark:text-white">
                 <span className="text-lg font-semibold">{product.item_name}</span>
-                <span>${product.item_price}</span>
+                <span>₱{product.item_price}</span>
             </div>
 
             {/* Button */}

@@ -33,6 +33,11 @@ export type Review = {
     transac_id: number;
     review_text: string;
     review_rating: number;
+    buyer_first_name: string;
+    buyer_last_name: string;
+    item_name: string;
+    item_price: number;
+    image?: string;
 };
 
 export type Row<T> = T & RowDataPacket;
