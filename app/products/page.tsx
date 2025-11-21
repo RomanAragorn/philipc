@@ -42,7 +42,8 @@ const ProductsPage: React.FC = () => {
                 const res = await fetch(`/api/products?${params.toString()}`);
                 if (!res.ok) throw new Error('Failed to fetch products');
 
-                const data = await res.json();
+                const json = await res.json();
+                const data = json.data.products;
                 setProducts(data || []);
             } catch (error) {
                 console.error(error);

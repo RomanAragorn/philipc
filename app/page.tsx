@@ -17,11 +17,12 @@ const Home: React.FC = () => {
     useEffect(() => {
         const fetchProducts = async (): Promise<void> => {
             try {
-                const res = await fetch('api/products');
+                const res = await fetch('/api/products');
                 if (!res.ok) throw new Error('Failed to Fetch');
-                const data = await res.json();
-                console.log(data)
-                setProducts(data);
+                const json = await res.json();
+                const { products } = json.data;
+
+                setProducts(products);
             } catch (error) {
                 console.log(error);
             } finally {

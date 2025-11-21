@@ -38,10 +38,15 @@ export async function getUser(username: string): Promise<GetUserResponse> {
     );
 
     const [reviews] = await pool.query<Row<Review>[]>(
-        `SELECT *
+        `SELECT r.*, 
+                u.first_name as buyer_first_name, 
+                u.last_name as buyer_last_name,
+                p.item_name,
+                p.item_price
          FROM reviews r
          JOIN transactions t ON r.transac_id = t.transac_id
          JOIN products p ON t.listing_id = p.listing_id
+         JOIN users u ON t.buyer_id = u.user_id
          WHERE p.seller_id = ? AND is_avail = 1`,
         [user_id]
     );

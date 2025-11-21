@@ -7,8 +7,7 @@ import Link from 'next/link';
 import Navigation from '@/app/components/Navigation';
 import Footer from '@/app/components/Footer';
 import Products from '@/app/components/Products';
-import userMock from '@/app/data/userMock.json';
-import { Product } from '@/app/data/types';
+import { Product as ProductType } from '@/app/data/types';
 import {
     ChevronLeft,
     ChevronRight,
@@ -21,95 +20,39 @@ import {
     User,
 } from 'lucide-react';
 
-interface ExtendedProduct extends Product {
-    images?: string[];
-    seller?: {
-        id: number;
-        username: string;
-        first_name: string;
-        last_name: string;
-        avatar: string;
-        bio: string;
-        location: string;
-        rating: number;
-        total_sales?: number;
-        member_since?: string;
-    };
-}
-
-const MOCK_REVIEWS = [
-    {
-        id: 1,
-        name: 'Maria Garcia',
-        rating: 5,
-        comment: 'Great seller! Fast shipping and item as described.',
-        date: '2024-10-15',
-    },
-    {
-        id: 2,
-        name: 'Juan Dela Cruz',
-        rating: 4,
-        comment: 'Good communication and quality product.',
-        date: '2024-10-10',
-    },
-    {
-        id: 3,
-        name: 'Lisa Wong',
-        rating: 5,
-        comment: 'Highly recommended! Will buy again.',
-        date: '2024-10-05',
-    },
-];
-
 const ProductDetailPage: React.FC = () => {
     const { id } = useParams();
     const router = useRouter();
 
-    const [product, setProduct] = useState<ExtendedProduct | null>(null);
+    const [product, setProduct] = useState<ProductType | null>(null);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [loading, setLoading] = useState(true);
-    const [recommendations, setRecommendations] = useState<Product[]>([]);
+    const [recommendations, setRecommendations] = useState<ProductType[]>([]);
 
     useEffect(() => {
         if (!id) return;
 
-        const fetchProduct = (): void => {
-            for (const user of userMock) {
-                const found = user.listings.find((l) => l.listing_id.toString() === id);
-                if (found) {
-                    const extended: ExtendedProduct = {
-                        ...found,
-                        fname: user.first_name,
-                        lname: user.last_name,
-                        images: [
-                            found.image || 'https://via.placeholder.com/600x400',
-                            'https://flowbite.s3.amazonaws.com/docs/gallery/square/image-3.jpg',
-                            'https://flowbite.s3.amazonaws.com/docs/gallery/square/image-4.jpg',
-                            'https://flowbite.s3.amazonaws.com/docs/gallery/square/image-5.jpg',
-                        ],
-                        seller: {
-                            ...user,
-                            total_sales: 15,
-                        },
-                    };
-                    setProduct(extended);
+        const fetchProduct = async (): Promise<void> => {
+            try {
+                const res = await fetch(`/api/products/${id}`);
+                if (!res.ok) throw new Error('Failed to fetch product');
+                const json = await res.json();
+                const product = json.data.product[0];
 
-                    const otherProducts = userMock
-                        .filter((u) => u.id !== user.id)
-                        .flatMap((u) =>
-                            u.listings.map((l) => ({
-                                ...l,
-                                fname: u.first_name,
-                                lname: u.last_name,
-                            }))
-                        )
-                        .slice(0, 4);
-                    setRecommendations(otherProducts);
+                setProduct(product);
 
-                    break;
-                }
+                const recRes = await fetch(`/api/products?exclude=${id}&limit=4`);
+                if (!recRes.ok) throw new Error('Failed to fetch recommendations');
+                const recData = await recRes.json();
+
+                setRecommendations(recData.data.products);
+            } catch (error) {
+                console.error(error);
+                setProduct(null);
+                setRecommendations([]);
+            } finally {
+                setLoading(false);
             }
-            setLoading(false);
         };
 
         fetchProduct();
@@ -147,7 +90,7 @@ const ProductDetailPage: React.FC = () => {
         );
 
     const nextImage = (): void => {
-        if (!product.images) return;
+        if (!product) return;
         setCurrentImageIndex((prev) => (prev + 1) % product.images!.length);
     };
 
@@ -239,14 +182,14 @@ const ProductDetailPage: React.FC = () => {
                             {product.item_name}
                         </h1>
                         <p className="text-primary mt-2 text-4xl font-bold">
-                            ₱{product.item_price.toLocaleString()}
+                            ₱{product.item_price}
                         </p>
 
                         <div className="mt-2 flex items-center space-x-4">
                             <span
-                                className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${product.condition === 'Brand New' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}
+                                className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${product.item_condition === 'Brand New' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}
                             >
-                                {product.condition}
+                                {product.item_condition}
                             </span>
                             <span className="flex items-center text-gray-600 dark:text-gray-400">
                                 <MapPin className="mr-1 h-4 w-4" /> {product.item_location}
@@ -269,7 +212,7 @@ const ProductDetailPage: React.FC = () => {
                                 Description
                             </h3>
                             <p className="leading-relaxed text-gray-700 dark:text-gray-300">
-                                {product.description}
+                                {product.item_description}
                             </p>
                         </div>
 
@@ -289,17 +232,17 @@ const ProductDetailPage: React.FC = () => {
                 </div>
 
                 {/* Seller Info */}
-                {product.seller && (
+                {product.full_name && (
                     <div className="mb-8 rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800">
                         <h3 className="mb-4 text-xl font-semibold text-gray-900 dark:text-white">
                             Seller Information
                         </h3>
                         <div className="flex items-start space-x-4">
                             <div className="relative h-16 w-16 overflow-hidden rounded-full bg-gray-200">
-                                {product.seller.avatar ? (
+                                {product.images ? (
                                     <Image
-                                        src={product.seller.avatar}
-                                        alt={`${product.seller.first_name} ${product.seller.last_name}`}
+                                        src={product.seller_avatar || ''}
+                                        alt={`${product.full_name}`}
                                         fill
                                         className="object-cover"
                                     />
@@ -310,33 +253,33 @@ const ProductDetailPage: React.FC = () => {
                             <div className="flex-1">
                                 <div className="flex items-center space-x-2">
                                     <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
-                                        {product.seller.first_name} {product.seller.last_name}
+                                        {product.full_name}
                                     </h4>
                                     <div className="flex items-center">
                                         <Star className="h-4 w-4 fill-current text-yellow-400" />
                                         <span className="ml-1 text-sm text-gray-600 dark:text-gray-400">
-                                            {product.seller.rating} ({product.seller.total_sales}{' '}
-                                            reviews)
+                                            {/* {product.seller.rating} ({product.seller.total_sales}{' '}
+                                            reviews) */}
                                         </span>
                                     </div>
                                 </div>
                                 <div className="mt-2 grid grid-cols-3 gap-4 text-sm text-gray-600 dark:text-gray-400">
                                     <div className="flex items-center">
                                         <Package className="mr-2 h-4 w-4" />
-                                        {product.seller.total_sales} sales
+                                        {/* {product.seller.total_sales} sales */}
                                     </div>
                                     <div className="flex items-center">
                                         <MapPin className="mr-2 h-4 w-4" />
-                                        {product.seller.location}
+                                        {product.item_location}
                                     </div>
                                 </div>
                                 <p className="mt-2 text-gray-700 dark:text-gray-300">
-                                    {product.seller.bio}
+                                    {/* {product.seller.bio} */}
                                 </p>
                             </div>
                             <Link
                                 className="bg-primary rounded-lg px-4 py-2 font-medium text-white hover:bg-blue-700 dark:bg-blue-600"
-                                href={`/users/${product.seller.username}`}
+                                href={`/users/${product.username}`}
                             >
                                 View Profile
                             </Link>
@@ -350,7 +293,7 @@ const ProductDetailPage: React.FC = () => {
                         Seller Reviews
                     </h3>
                     <div className="space-y-4">
-                        {MOCK_REVIEWS.map((review) => (
+                        {/* {product.map((review) => (
                             <div
                                 key={review.id}
                                 className="border-b border-gray-200 pb-4 last:border-b-0 dark:border-gray-700"
@@ -373,7 +316,7 @@ const ProductDetailPage: React.FC = () => {
                                 </div>
                                 <p className="text-gray-700 dark:text-gray-300">{review.comment}</p>
                             </div>
-                        ))}
+                        ))} */}
                     </div>
                 </div>
 
