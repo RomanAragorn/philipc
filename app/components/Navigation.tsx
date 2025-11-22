@@ -9,6 +9,7 @@ import Button from '@/app/components/Button';
 import { Search, ChevronDown, CircleUser } from 'lucide-react';
 import ThemeToggle from '@/app/components/ThemeToggle';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { logout } from '@/app/(auth)/login/actions';
 
 const Navigation: React.FC = () => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -87,6 +88,8 @@ const Navigation: React.FC = () => {
                                 />
                             </button> */}
                             <div className="flex items-center justify-center gap-2 text-white">
+                                {/* fetch isLoggedIn from api/session */}
+                                {/* isLoggedIn = false */}
                                 <Link
                                     type="button"
                                     className="hover:text-dark-primary text-xs text-nowrap text-white hover:cursor-pointer"
@@ -102,6 +105,14 @@ const Navigation: React.FC = () => {
                                 >
                                     Log In
                                 </Link>
+                                {/* isLoggedIn = false */}
+                                {/* isLoggedIn = true */}
+                                <form action = {logout}>
+                                    <button className="hover:text-dark-primary text-xs text-nowrap text-white hover:cursor-pointer">
+                                        Log Out
+                                    </button>
+                                </form>
+                                {/* isLoggedIn = true */}
                             </div>
                             {/* Desktop User Menu */}
                             {userMenuOpen && (

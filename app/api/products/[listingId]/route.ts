@@ -1,4 +1,4 @@
-import { getSpecificProduct } from '@/app/lib/specificProduct';
+import { getSpecificProduct } from '@/app/lib/queries/specificProduct';
 
 export async function GET(
     req: Response,
