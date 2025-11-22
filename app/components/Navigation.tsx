@@ -74,7 +74,9 @@ const Navigation: React.FC = () => {
 
                         {/* Desktop Sell Button */}
                         <div className="hidden lg:inline">
-                            <Button label="Sell Item" />
+                            <Link href={'/sell'}>
+                                <Button label="Sell Item" />
+                            </Link>
                         </div>
 
                         {/* Dekstop User Icon */}
