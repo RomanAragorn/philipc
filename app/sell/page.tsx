@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { conditionOptions } from '@/app/data/searchFilters';
 import Dropdown from '@/app/components/Dropdown';
+import Image from 'next/image';
 
 const CreateListingPage: React.FC = () => {
     const router = useRouter();
@@ -22,8 +23,7 @@ const CreateListingPage: React.FC = () => {
     const [location, setLocation] = useState('');
     const [loading, setLoading] = useState(false);
 
-    // Handle file upload
-    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>): void => {
         if (!e.target.files) return;
 
         const files = Array.from(e.target.files);
@@ -34,17 +34,16 @@ const CreateListingPage: React.FC = () => {
         setPreviewUrls((prev) => [...prev, ...urls]);
     };
 
-    const removeImage = (index: number) => {
+    const removeImage = (index: number): void => {
         setImages((prev) => prev.filter((_, i) => i !== index));
         setPreviewUrls((prev) => prev.filter((_, i) => i !== index));
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent): Promise<void> => {
         e.preventDefault();
         setLoading(true);
 
         try {
-            // 1. Create product
             const res = await fetch('/api/products', {
                 method: 'POST',
                 body: JSON.stringify({
@@ -59,7 +58,6 @@ const CreateListingPage: React.FC = () => {
             const json = await res.json();
             const productId = json?.data?.product_id;
 
-            // 2. Upload images
             for (const file of images) {
                 const formData = new FormData();
                 formData.append('image', file);
@@ -94,66 +92,92 @@ const CreateListingPage: React.FC = () => {
 
             <div className="mx-auto max-w-7xl px-4 pb-6 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                    {/* LEFT COLUMN — IMAGES */}
-                    <div className="rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800">
+                    {/* LEFT COLUMN  */}
+                    <div className="flex h-full flex-col rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800">
                         <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
                             Upload Images
                         </h2>
 
-                        {/* Thumbnail Preview */}
-                        <div className="mb-4 h-64 w-full overflow-hidden rounded-lg border border-gray-300 dark:border-gray-700">
-                            {previewUrls.length > 0 ? (
-                                <img
-                                    src={previewUrls[0]}
-                                    alt="thumbnail"
-                                    className="h-full w-full object-cover"
-                                />
-                            ) : (
-                                <div className="flex h-full w-full items-center justify-center text-gray-500 dark:text-gray-400">
-                                    Thumbnail Preview
-                                </div>
+                        <div className="flex flex-1 flex-col">
+                            {previewUrls.length === 0 && (
+                                <label className="flex flex-1 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-gray-400 text-gray-600 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">
+                                    <Upload className="mb-2 h-6 w-6" />
+                                    Click to upload images
+                                    <input
+                                        type="file"
+                                        multiple
+                                        accept="image/*"
+                                        className="hidden"
+                                        onChange={handleImageUpload}
+                                    />
+                                </label>
                             )}
-                        </div>
 
-                        {/* Small image previews */}
-                        {previewUrls.length > 1 && (
-                            <div className="mb-4 grid grid-cols-4 gap-2">
-                                {previewUrls.slice(1).map((url, index) => (
-                                    <div
-                                        key={index}
-                                        className="relative"
-                                    >
-                                        <img
-                                            src={url}
-                                            className="h-20 w-full rounded-lg object-cover"
+                            {previewUrls.length > 0 && (
+                                <>
+                                    <div className="relative mb-4 h-64 w-full overflow-hidden rounded-lg border border-gray-300 dark:border-gray-700">
+                                        <Image
+                                            src={previewUrls[0]}
+                                            alt="thumbnail"
+                                            fill
+                                            className="object-cover"
                                         />
                                         <button
                                             type="button"
-                                            onClick={() => removeImage(index + 1)}
-                                            className="absolute top-1 right-1 rounded-full bg-black/60 p-1 text-white"
+                                            onClick={() => removeImage(0)}
+                                            className="absolute top-2 right-2 rounded-full bg-black/60 p-1 text-white hover:cursor-pointer hover:text-red-400"
                                         >
-                                            <Trash2 size={14} />
+                                            <Trash2 size={16} />
                                         </button>
                                     </div>
-                                ))}
-                            </div>
-                        )}
 
-                        {/* Upload Input */}
-                        <label className="mt-4 flex cursor-pointer items-center justify-center rounded-lg border border-dashed border-gray-400 py-10 text-gray-600 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">
-                            <Upload className="mr-2 h-5 w-5" />
-                            Click to upload images
-                            <input
-                                type="file"
-                                multiple
-                                accept="image/*"
-                                className="hidden"
-                                onChange={handleImageUpload}
-                            />
-                        </label>
+                                    {/* Small previews */}
+                                    {previewUrls.length > 1 && (
+                                        <div className="mb-4 grid grid-cols-4 gap-2">
+                                            {previewUrls.slice(1).map((url, index) => (
+                                                <div
+                                                    className="relative"
+                                                    key={index}
+                                                >
+                                                    <Image
+                                                        src={url}
+                                                        alt="preview"
+                                                        width={100}
+                                                        height={100}
+                                                        className="h-20 w-full rounded-lg border border-gray-300 object-cover dark:border-gray-700"
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => removeImage(index + 1)}
+                                                        className="absolute top-1 right-1 rounded-full bg-black/60 p-1 text-white hover:cursor-pointer hover:text-red-400"
+                                                    >
+                                                        <Trash2 size={14} />
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+
+                                    {/* Upload More */}
+                                    {previewUrls.length < 5 && (
+                                        <label className="mt-2 flex cursor-pointer items-center justify-center rounded-lg border border-dashed border-gray-400 py-10 text-gray-600 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">
+                                            <Upload className="mr-2 h-5 w-5" />
+                                            Upload more images ({5 - previewUrls.length} left)
+                                            <input
+                                                type="file"
+                                                multiple
+                                                accept="image/*"
+                                                className="hidden"
+                                                onChange={handleImageUpload}
+                                            />
+                                        </label>
+                                    )}
+                                </>
+                            )}
+                        </div>
                     </div>
 
-                    {/* RIGHT COLUMN — FORM */}
+                    {/* RIGHT COLUMN */}
                     <div className="rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800">
                         <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
                             Item Details
@@ -227,7 +251,7 @@ const CreateListingPage: React.FC = () => {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full rounded-lg bg-blue-600 py-3 text-sm font-medium text-white hover:bg-blue-700 disabled:bg-blue-400"
+                                className="bg-dark-primary w-full rounded-lg py-3 text-sm font-medium text-white hover:bg-[#0C587B] disabled:bg-blue-400 dark:bg-blue-600 dark:hover:bg-blue-700"
                             >
                                 {loading ? 'Listing...' : 'List Item'}
                             </button>
