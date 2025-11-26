@@ -139,7 +139,7 @@ const CreateListingPage: React.FC = () => {
                                         <button
                                             type="button"
                                             onClick={() => removeImage(0)}
-                                            className="absolute top-2 right-2 rounded-full bg-black/60 p-1 text-white hover:cursor-pointer hover:text-red-400"
+                                            className="absolute top-2 right-2 rounded-full bg-black/60 p-1 text-white"
                                         >
                                             <Trash2 size={16} />
                                         </button>
@@ -163,7 +163,7 @@ const CreateListingPage: React.FC = () => {
                                                     <button
                                                         type="button"
                                                         onClick={() => removeImage(index + 1)}
-                                                        className="absolute top-1 right-1 rounded-full bg-black/60 p-1 text-white hover:cursor-pointer hover:text-red-400"
+                                                        className="absolute top-1 right-1 rounded-full bg-black/60 p-1 text-white"
                                                     >
                                                         <Trash2 size={14} />
                                                     </button>
@@ -182,7 +182,7 @@ const CreateListingPage: React.FC = () => {
                                         >
                                             <input {...getInputProps()} />
                                             <Upload className="mr-2 h-5 w-5" />
-                                            Upload more images ({5 - previewUrls.length} left)
+                                            Upload more images (Max 5)
                                         </div>
                                     )}
                                 </>
