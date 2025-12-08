@@ -15,8 +15,8 @@ export async function verifyUser(
     password: string
 ): Promise<GetVerifyUserResponse> {
     const [users] = await pool.query<Row<User>[]>(
-        `SELECT user_id FROM users WHERE email = ? AND password = ?`,
-        [username, password]
+        `SELECT user_id FROM users WHERE (username = ? OR email = ?) AND password = ?`,
+        [username, username, password]
     );
 
     if (users.length === 0) {
