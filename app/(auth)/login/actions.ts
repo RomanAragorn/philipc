@@ -41,10 +41,10 @@ export async function login(prevState: LoginState, formData: FormData): Promise<
     }
 
     await createSession(String(fetchedUser.data.user_id));
-    redirect('/products');
+    redirect('/');
 }
 
 export async function logout(): Promise<never> {
     await deleteSession();
-    redirect('/login');
+    redirect('/');
 }
