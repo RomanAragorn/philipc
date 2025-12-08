@@ -5,13 +5,10 @@ import Link from 'next/link';
 import { LoginState } from './actions';
 
 type LogInFormProps = {
-    action: (
-        prevState: LoginState,
-        formData: FormData
-    ) => Promise<LoginState>;
+    action: (prevState: LoginState, formData: FormData) => Promise<LoginState>;
 };
 
-const LoginForm: React.FC<LogInFormProps> = ({ action } : { action : any }) => {
+const LoginForm: React.FC<LogInFormProps> = ({ action }: { action: any }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [isRemembered, setIsRemembered] = useState(false);
@@ -30,14 +27,12 @@ const LoginForm: React.FC<LogInFormProps> = ({ action } : { action : any }) => {
                 Welcome Back!
             </h2>
             <form
-                action={loginAction}            
+                action={loginAction}
                 // onSubmit={handleSubmit}
                 className="space-y-6"
             >
                 {/* Username Input */}
-                {state?.errors?.username && (
-                    <p className="text-red-500">{state.errors.username}</p>
-                )}
+                {state?.errors?.username && <p className="text-red-500">{state.errors.username}</p>}
                 <div className="relative z-0">
                     <input
                         id="username"
@@ -98,6 +93,7 @@ const LoginForm: React.FC<LogInFormProps> = ({ action } : { action : any }) => {
                         Remember Me
                     </label>
                 </div>
+
                 {/* Submit Button */}
                 <div>
                     <button

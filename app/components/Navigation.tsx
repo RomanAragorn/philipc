@@ -109,7 +109,7 @@ const Navigation: React.FC = () => {
                                 </Link>
                                 {/* isLoggedIn = false */}
                                 {/* isLoggedIn = true */}
-                                <form action = {logout}>
+                                <form action={logout}>
                                     <button className="hover:text-dark-primary text-xs text-nowrap text-white hover:cursor-pointer">
                                         Log Out
                                     </button>

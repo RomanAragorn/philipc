@@ -1,15 +1,16 @@
-import {createConnection} from '@/app/lib/db';
+import { createConnection } from '@/app/lib/db';
 
 export async function getUser(username) {
-  const db = await createConnection();
+    const db = await createConnection();
 
-  const [user] = await db.query('SELECT * FROM users WHERE username = ?', [username]);
+    const [user] = await db.query('SELECT * FROM users WHERE username = ?', [username]);
 
-  const { user_id } = user[0];
+    const { user_id } = user[0];
 
-  const [listings] = await db.query('SELECT * FROM products WHERE seller_id = ?', [user_id]);
+    const [listings] = await db.query('SELECT * FROM products WHERE seller_id = ?', [user_id]);
 
-  const [reviews] = await db.query(`SELECT *
+    const [reviews] = await db.query(
+        `SELECT *
                                     FROM reviews
                                     WHERE transac_id IN 
                                       (
@@ -23,12 +24,14 @@ export async function getUser(username) {
                                                     FROM products 
                                                     WHERE seller_id = 1 AND is_avail = 0
                                                 )
-                                        );`, [user_id]);
+                                        );`,
+        [user_id]
+    );
 
-  console.log(reviews);
+    console.log(reviews);
 
-  user[0]['listings'] = listings;
-  user[0]['reviews'] = reviews;
+    user[0]['listings'] = listings;
+    user[0]['reviews'] = reviews;
 
-  return user[0];
+    return user[0];
 }

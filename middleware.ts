@@ -1,39 +1,39 @@
-import { NextRequest, NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import { decrypt } from "./app/lib/session";
+import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
+import { decrypt } from './app/lib/session';
 
 export default async function middleware(req: NextRequest) {
-  const path = req.nextUrl.pathname;
+    const path = req.nextUrl.pathname;
 
-  const cookie = await cookies();
-  
-  const session = cookie.get('session')?.value;
+    const cookie = await cookies();
 
-  const decryptedSession = await decrypt(session);
+    const session = cookie.get('session')?.value;
 
-  const protectedRoutes = [`/users/${decryptedSession?.userId}`];
-  const publicRoutes = ["/login"];
+    const decryptedSession = await decrypt(session);
 
-  const isProtectedRoute = protectedRoutes.includes(path);
-  const isPublicRoute = publicRoutes.includes(path);
+    const protectedRoutes = [`/users/${decryptedSession?.userId}`];
+    const publicRoutes = ['/login'];
 
-  if (isProtectedRoute && !decryptedSession?.userId) {
-    return NextResponse.redirect(new URL(`/login`, req.nextUrl))
-  }
+    const isProtectedRoute = protectedRoutes.includes(path);
+    const isPublicRoute = publicRoutes.includes(path);
 
-  if (isPublicRoute && decryptedSession?.userId) {
-    return NextResponse.redirect(new URL("/", req.nextUrl));
-  }
+    if (isProtectedRoute && !decryptedSession?.userId) {
+        return NextResponse.redirect(new URL(`/login`, req.nextUrl));
+    }
 
-  return NextResponse.next()
-};
+    if (isPublicRoute && decryptedSession?.userId) {
+        return NextResponse.redirect(new URL('/', req.nextUrl));
+    }
+
+    return NextResponse.next();
+}
 
 export async function isLoggedIn() {
-  const cookie = await cookies();
-  
-  const session = cookie.get('session')?.value;
+    const cookie = await cookies();
 
-  console.log(session);
+    const session = cookie.get('session')?.value;
 
-  return session ? true : false;
+    console.log(session);
+
+    return session ? true : false;
 }
