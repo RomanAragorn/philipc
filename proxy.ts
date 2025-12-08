@@ -19,7 +19,7 @@ export default async function middleware(req: NextRequest): Promise<NextResponse
 
     // Redirect unauthenticated users to login
     if (isProtectedRoute && !isAuthenticated) {
-        return NextResponse.redirect(new URL('/', req.nextUrl));
+        return NextResponse.redirect(new URL('/login', req.nextUrl));
     }
 
     // Redirect authenticated users away from auth pages

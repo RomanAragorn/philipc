@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useFormState } from 'react-dom';
+import React, { useActionState, useState } from 'react';
 import Link from 'next/link';
 import { signup, SignupState } from './actions';
 
@@ -14,7 +13,7 @@ const SignupPage: React.FC = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [state, signupAction] = useFormState<SignupState, FormData>(signup, undefined);
+    const [state, signupAction] = useActionState<SignupState, FormData>(signup, undefined);
 
     return (
         <>
