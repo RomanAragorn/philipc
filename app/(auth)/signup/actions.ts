@@ -10,7 +10,6 @@ export type SignupState =
           errors?: {
               first_name?: string[];
               last_name?: string[];
-              middle_name?: string[];
               email?: string[];
               contact_no?: string[];
               username?: string[];
@@ -24,12 +23,11 @@ export type SignupState =
 const signupSchema = z
     .object({
         first_name: z.string().min(1, { message: 'First name is required' }).trim(),
-        middle_name: z.string().optional(),
         last_name: z.string().min(1, { message: 'Last name is required' }).trim(),
         email: z.email({ message: 'Invalid email address' }).trim(),
         contact_no: z
             .string()
-            .regex(/^09\d{9}$/, { message: 'Contact number must be in format 09XXXXXXXXX' })
+            .regex(/^9\d{9}$/, { message: 'Contact number must be in format 09XXXXXXXXX' })
             .trim(),
         username: z
             .string()
@@ -56,18 +54,9 @@ export async function signup(prevState: SignupState, formData: FormData): Promis
         };
     }
 
-    const { first_name, middle_name, last_name, email, contact_no, username, password } =
-        result.data;
+    const { first_name, last_name, email, contact_no, username, password } = result.data;
 
-    const signUpResult = await signUp(
-        first_name,
-        middle_name || '',
-        last_name,
-        email,
-        contact_no,
-        username,
-        password
-    );
+    const signUpResult = await signUp(first_name, last_name, email, contact_no, username, password);
 
     if (!signUpResult.success) {
         return {

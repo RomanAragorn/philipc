@@ -22,7 +22,6 @@ export async function checkUserExists(username: string, contact_no: string): Pro
 
 export async function signUp(
     first_name: string,
-    middle_name: string,
     last_name: string,
     email: string,
     contact_no: string,
@@ -42,10 +41,10 @@ export async function signUp(
 
         const [result] = await pool.execute<ResultSetHeader>(
             `INSERT INTO users
-                (first_name, middle_name, last_name, email, contact_no, username, password)
+                (first_name, last_name, email, contact_no, username, password)
                 VALUES
-                (?, ?, ?, ?, ?, ?, ?)`,
-            [first_name, middle_name, last_name, email, contact_no, username, password]
+                (?, ?, ?, ?, ?, ?)`,
+            [first_name, last_name, email, contact_no, username, password]
         );
 
         return {
