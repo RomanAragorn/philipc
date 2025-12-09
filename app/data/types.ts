@@ -18,11 +18,12 @@ export type Product = {
 
 export interface CreateProductInput {
     seller_id: number;
-    name: string;
-    price: number;
-    conditioning: string;
-    description: string;
-    location: string;
+    category: string;
+    item_name: string;
+    item_price: number;
+    item_condition: string;
+    item_description: string;
+    item_location: string;
 }
 
 export type User = {
@@ -43,7 +44,7 @@ export type UserSession = {
     first_name: string;
     last_name: string;
     profile_pic_url?: string | null;
-}
+};
 
 export type Review = {
     review_id: number;
