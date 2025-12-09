@@ -10,17 +10,10 @@ import { Search, ChevronDown, CircleUser } from 'lucide-react';
 import ThemeToggle from '@/app/components/ThemeToggle';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { logout } from '@/app/(auth)/login/actions';
-
-interface User {
-    user_id: number;
-    username: string;
-    first_name: string;
-    last_name: string;
-    profile_pic_url?: string | null;
-}
+import { UserSession } from '@/app/data/types';
 
 const Navigation: React.FC = () => {
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<UserSession | null>(null);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [userMenuOpen, setUserMenuOpen] = useState(false);
 

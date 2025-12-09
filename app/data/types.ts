@@ -16,6 +16,16 @@ export type Product = {
     images?: string[];
 };
 
+export interface CreateProductInput {
+    seller_id: number;
+    category: string;
+    item_name: string;
+    item_price: number;
+    item_condition: string;
+    item_description: string;
+    item_location: string;
+}
+
 export type User = {
     user_id: number;
     first_name: string;
@@ -26,6 +36,14 @@ export type User = {
     fb_link: string;
     password: string;
     image?: string;
+};
+
+export type UserSession = {
+    user_id: number;
+    username: string;
+    first_name: string;
+    last_name: string;
+    profile_pic_url?: string | null;
 };
 
 export type Review = {

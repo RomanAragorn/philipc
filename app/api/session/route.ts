@@ -1,15 +1,7 @@
 import { cookies } from 'next/headers';
 import { decrypt } from '@/app/lib/session';
 import { pool } from '@/app/lib/db';
-import { RowDataPacket } from 'mysql2';
-
-interface UserRow extends RowDataPacket {
-    user_id: number;
-    username: string;
-    first_name: string;
-    last_name: string;
-    profile_pic_url?: string | null;
-}
+import { Row, UserSession } from '@/app/data/types';
 
 export async function GET(): Promise<Response> {
     const cookie = await cookies();
@@ -26,7 +18,7 @@ export async function GET(): Promise<Response> {
     }
 
     // Fetch user data from database
-    const [users] = await pool.query<UserRow[]>(
+    const [users] = await pool.query<Row<UserSession>[]>(
         'SELECT user_id, username, first_name, last_name, profile_pic_url FROM users WHERE user_id = ?',
         [payload.userId]
     );
