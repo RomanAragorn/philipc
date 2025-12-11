@@ -16,10 +16,11 @@ const ProductsPage: React.FC = () => {
     const router = useRouter();
 
     // Read query params or set defaults
+    const categoryQuery = searchParams.get('category') || '';
     const searchQuery = searchParams.get('search') || '';
     const conditionQuery = searchParams.get('condition') || '';
-    const minPriceQuery = searchParams.get('minPrice') || '0';
-    const maxPriceQuery = searchParams.get('maxPrice') || '50000';
+    const minPriceQuery = searchParams.get('minPrice') || ''//'0';
+    const maxPriceQuery = searchParams.get('maxPrice') || ''//'50000';
     const sortQuery = searchParams.get('sort') || '';
 
     const [condition, setCondition] = useState(conditionQuery);
@@ -33,6 +34,7 @@ const ProductsPage: React.FC = () => {
         const fetchProducts = async (): Promise<void> => {
             try {
                 const params = new URLSearchParams();
+                if (categoryQuery) params.set('category', categoryQuery);
                 if (searchQuery) params.set('search', searchQuery);
                 if (condition) params.set('condition', condition);
                 if (minPrice) params.set('minPrice', minPrice);
@@ -43,7 +45,7 @@ const ProductsPage: React.FC = () => {
                 if (!res.ok) throw new Error('Failed to fetch products');
 
                 const json = await res.json();
-                const data = json.data.products;
+                const data = json.data?.products ?? []; // Added this to remove error appearing in console.
                 setProducts(data || []);
             } catch (error) {
                 console.error(error);
@@ -52,7 +54,7 @@ const ProductsPage: React.FC = () => {
         };
 
         fetchProducts();
-    }, [searchQuery, condition, minPrice, maxPrice, sort]);
+    }, [categoryQuery, searchQuery, condition, minPrice, maxPrice, sort]);
 
     // Frontend filtering, to be changed
     const filteredProducts = useMemo(() => {
@@ -63,6 +65,7 @@ const ProductsPage: React.FC = () => {
         e.preventDefault();
 
         const params = new URLSearchParams();
+        if (categoryQuery) params.set('category', categoryQuery);
         if (condition) params.set('condition', condition);
         if (minPrice) params.set('minPrice', minPrice);
         if (maxPrice) params.set('maxPrice', maxPrice);

@@ -19,6 +19,15 @@ interface PostProductResponse {
     } | null;
 }
 
+interface Filters {
+    category: string;
+    search: string;
+    condition: string;
+    minPrice: string;
+    maxPrice: string;
+    sort: string;
+}
+
 export async function getProducts(): Promise<GetProductResponse> {
     const [products] = await pool.query<
         Row<Product>[]
@@ -79,3 +88,70 @@ export async function postProduct(data: CreateProductInput): Promise<PostProduct
         };
     }
 }
+
+export async function getByProductCategory(type: String): Promise<GetProductResponse> {
+  const [products] = await pool.query<
+        Row<Product>[]
+    >(`SELECT products.*, CONCAT(users.first_name, " ", users.last_name) AS full_name 
+                                      FROM products 
+                                      JOIN users 
+                                      ON products.seller_id = users.user_id
+                                      AND products.category = ?;`, type);
+    if (products.length === 0) {
+        return {
+            success: false,
+            message: 'Products does not exist',
+            data: null,
+        };
+    }
+
+    return {
+        success: true,
+        message: 'Products Fetched Successfully',
+        data: {
+            products: products,
+        },
+    };
+}
+
+export async function filterProducts(filters: Filters): Promise<GetProductResponse> {
+
+    let conditions = '';
+
+    if (filters.category) conditions += ` AND products.category = '${filters.category}'`;
+    if (filters.search) conditions += ` AND products.item_name LIKE '%${filters.search}%'`;
+    if (filters.condition) conditions += ` AND products.item_condition = '${filters.condition}'`;
+    if (filters.maxPrice && !filters.minPrice) conditions += ` AND products.item_price <= ${parseFloat(filters.maxPrice)}`;
+    if (!filters.maxPrice && filters.minPrice) conditions += ` AND products.item_price >= ${parseFloat(filters.minPrice)}`;
+    if (filters.maxPrice && filters.minPrice) conditions += ` AND products.item_price BETWEEN ${parseFloat(filters.minPrice)} AND ${filters.maxPrice}`;
+    if (filters.sort) conditions += `  ORDER BY products.item_price ${filters.sort}`;
+
+    conditions += ';';
+
+    let query = `SELECT products.*, CONCAT(users.first_name, " ", users.last_name) AS full_name 
+                                        FROM products 
+                                        JOIN users 
+                                        ON products.seller_id = users.user_id`;
+
+    query = query += conditions;
+
+    const [products] = await pool.query<
+            Row<Product>[]
+        >(query);
+        if (products.length === 0) {
+            return {
+                success: false,
+                message: 'Products does not exist',
+                data: null,
+            };
+        }
+
+        return {
+            success: true,
+            message: 'Products Fetched Successfully',
+            data: {
+                products: products,
+            },
+        };
+    }
+

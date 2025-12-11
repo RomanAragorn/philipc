@@ -182,6 +182,7 @@ const Navigation: React.FC = () => {
                                         Log In
                                     </Link>
                                 </div>
+                                
                             )}
                         </div>
                     </div>
@@ -249,7 +250,7 @@ const Navigation: React.FC = () => {
                                     {moreItems.map((option) => (
                                         <li key={option.id}>
                                             <a
-                                                href="#"
+                                                href={option.href}
                                                 className="block px-4 py-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                                             >
                                                 <div className="font-medium">{option.label}</div>

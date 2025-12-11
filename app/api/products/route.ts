@@ -1,7 +1,30 @@
 import { CreateProductInput } from '@/app/data/types';
-import { getProducts, postProduct } from '@/app/lib/queries/products';
+import { getProducts, postProduct, filterProducts } from '@/app/lib/queries/products';
 
-export async function GET(): Promise<Response> {
+export async function GET(req: Request): Promise<Response> {
+    const { searchParams } = new URL(req.url);
+
+    const category = searchParams.get('category') || '';
+    const search = searchParams.get('search') || '';
+    const condition = searchParams.get('condition') || '';
+    const minPrice = searchParams.get('minPrice') || ''//'0';
+    const maxPrice = searchParams.get('maxPrice') || ''//'50000';
+    const sort = searchParams.get('sort') || '';
+
+    const filters = {
+        category, 
+        search, 
+        condition, 
+        minPrice, 
+        maxPrice, 
+        sort,
+    };
+    
+    if (filters) {
+        const products = await filterProducts(filters);
+        return Response.json(products);
+    }
+
     const products = await getProducts();
     return Response.json(products);
 }
