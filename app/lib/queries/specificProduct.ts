@@ -12,7 +12,7 @@ interface GetProductResponse {
 
 export async function getSpecificProduct(listingId: number): Promise<GetProductResponse> {
     const product = await pool.query<Row<Product>[]>(
-        `SELECT products.*, CONCAT(users.first_name, " ", users.last_name) AS full_name, username 
+        `SELECT products.*, CONCAT(users.first_name, " ", users.last_name) AS full_name, username
                                   FROM products 
                                   JOIN users 
                                   ON products.seller_id = users.user_id 

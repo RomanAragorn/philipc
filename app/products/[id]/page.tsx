@@ -7,7 +7,7 @@ import Link from 'next/link';
 import Navigation from '@/app/components/Navigation';
 import Footer from '@/app/components/Footer';
 import Products from '@/app/components/Products';
-import { Product as ProductType } from '@/app/data/types';
+import { Product as ProductType, UserSession } from '@/app/data/types';
 import {
     ChevronLeft,
     ChevronRight,
@@ -18,6 +18,7 @@ import {
     ArrowLeft,
     Package,
     User,
+    Edit,
 } from 'lucide-react';
 
 const ProductDetailPage: React.FC = () => {
@@ -29,12 +30,20 @@ const ProductDetailPage: React.FC = () => {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [loading, setLoading] = useState(true);
     const [recommendations, setRecommendations] = useState<ProductType[]>([]);
+    const [user, setUser] = useState<UserSession | null>(null);
 
     useEffect(() => {
         if (!id) return;
 
         const fetchProduct = async (): Promise<void> => {
             try {
+                // Fetch user session
+                const userRes = await fetch('/api/session');
+                if (userRes.ok) {
+                    const userData = await userRes.json();
+                    setUser(userData.user || null);
+                }
+
                 const res = await fetch(`/api/products/${id}`);
                 if (!res.ok) throw new Error('Failed to fetch product');
                 const json = await res.json();
@@ -243,12 +252,29 @@ const ProductDetailPage: React.FC = () => {
 
                         {/* Actions */}
                         <div className="flex space-x-4">
-                            <button className="bg-primary flex-1 rounded-lg px-6 py-3 font-semibold text-white hover:bg-blue-700 dark:bg-blue-600">
-                                Contact Seller
-                            </button>
-                            <button className="rounded-lg border border-gray-300 p-3 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-800">
-                                <Share2 className="h-5 w-5 text-gray-600 dark:text-gray-400" />
-                            </button>
+                            {user && user.user_id === product.seller_id ? (
+                                <>
+                                    <Link
+                                        href={`/products/${id}/edit`}
+                                        className="bg-primary flex flex-1 items-center justify-center gap-2 rounded-lg px-6 py-3 font-semibold text-white hover:bg-blue-700 dark:bg-blue-600"
+                                    >
+                                        <Edit className="h-5 w-5" />
+                                        Edit Listing
+                                    </Link>
+                                    <button className="rounded-lg border border-gray-300 p-3 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-800">
+                                        <Share2 className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    <button className="bg-primary flex-1 rounded-lg px-6 py-3 font-semibold text-white hover:bg-blue-700 dark:bg-blue-600">
+                                        Contact Seller
+                                    </button>
+                                    <button className="rounded-lg border border-gray-300 p-3 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-800">
+                                        <Share2 className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+                                    </button>
+                                </>
+                            )}
                         </div>
 
                         {/* Description */}
