@@ -128,29 +128,71 @@ const ProductDetailPage: React.FC = () => {
                 <div className="mb-12 grid grid-cols-1 gap-8 lg:grid-cols-2">
                     {/* Image Carousel */}
                     <div className="space-y-4">
-                        <div className="relative aspect-square h-100 w-full overflow-hidden rounded-lg bg-white shadow-sm">
+                        <div className="relative aspect-square h-100 w-full overflow-hidden rounded-lg bg-white shadow-sm dark:bg-gray-800">
                             {images.length > 0 && (
                                 <>
-                                    <Image
-                                        src={images[currentImageIndex]}
-                                        alt={product.item_name}
-                                        fill
-                                        className="object-cover"
-                                        priority
-                                    />
+                                    {/* Carousel wrapper with all images */}
+                                    {images.map((img, idx) => (
+                                        <div
+                                            key={idx}
+                                            className={`absolute inset-0 transition-all duration-700 ease-in-out ${
+                                                idx === currentImageIndex
+                                                    ? 'translate-x-0 opacity-100'
+                                                    : idx < currentImageIndex
+                                                      ? '-translate-x-full opacity-0'
+                                                      : 'translate-x-full opacity-0'
+                                            }`}
+                                        >
+                                            <Image
+                                                src={img}
+                                                alt={`${product.item_name} ${idx + 1}`}
+                                                fill
+                                                className="object-cover"
+                                                priority={idx === 0}
+                                            />
+                                        </div>
+                                    ))}
+
                                     {images.length > 1 && (
                                         <>
+                                            {/* Slider indicators (dots) */}
+                                            <div className="absolute bottom-5 left-1/2 z-30 flex -translate-x-1/2 space-x-3 rounded-full bg-black/20 px-4 py-2 backdrop-blur-sm">
+                                                {images.map((_, idx) => (
+                                                    <button
+                                                        key={idx}
+                                                        type="button"
+                                                        className={`h-3 w-3 rounded-full shadow-lg transition-all duration-300 ${
+                                                            idx === currentImageIndex
+                                                                ? 'w-8 scale-110 bg-white shadow-white/50'
+                                                                : 'bg-white/60 hover:scale-110 hover:bg-white/90'
+                                                        }`}
+                                                        aria-current={idx === currentImageIndex}
+                                                        aria-label={`Slide ${idx + 1}`}
+                                                        onClick={() => setCurrentImageIndex(idx)}
+                                                    />
+                                                ))}
+                                            </div>
+
+                                            {/* Slider controls */}
                                             <button
+                                                type="button"
+                                                className="group absolute top-0 left-0 z-30 flex h-full cursor-pointer items-center justify-center px-4 opacity-0 transition-opacity duration-300 hover:opacity-100 focus:outline-none"
                                                 onClick={prevImage}
-                                                className="absolute top-1/2 left-2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white hover:bg-black/70"
                                             >
-                                                <ChevronLeft className="h-5 w-5" />
+                                                <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-black/60 shadow-xl backdrop-blur-sm transition-all duration-200 group-hover:scale-110 group-hover:bg-black/80 group-focus:ring-4 group-focus:ring-white/50 group-focus:outline-none">
+                                                    <ChevronLeft className="h-6 w-6 text-white drop-shadow-lg" />
+                                                    <span className="sr-only">Previous</span>
+                                                </span>
                                             </button>
                                             <button
+                                                type="button"
+                                                className="group absolute top-0 right-0 z-30 flex h-full cursor-pointer items-center justify-center px-4 opacity-0 transition-opacity duration-300 hover:opacity-100 focus:outline-none"
                                                 onClick={nextImage}
-                                                className="absolute top-1/2 right-2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white hover:bg-black/70"
                                             >
-                                                <ChevronRight className="h-5 w-5" />
+                                                <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-black/60 shadow-xl backdrop-blur-sm transition-all duration-200 group-hover:scale-110 group-hover:bg-black/80 group-focus:ring-4 group-focus:ring-white/50 group-focus:outline-none">
+                                                    <ChevronRight className="h-6 w-6 text-white drop-shadow-lg" />
+                                                    <span className="sr-only">Next</span>
+                                                </span>
                                             </button>
                                         </>
                                     )}
