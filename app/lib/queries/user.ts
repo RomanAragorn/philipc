@@ -33,7 +33,12 @@ export async function getUser(username: string): Promise<GetUserResponse> {
     const user_id = user.user_id;
 
     const [listings] = await pool.query<Row<Product>[]>(
-        `SELECT * FROM products WHERE seller_id = ?`,
+        `SELECT p.*, pi.image_url 
+            FROM products p
+            LEFT JOIN product_images pi
+            ON p.listing_id = pi.listing_id
+            AND is_cover = 1
+            WHERE seller_id = ?`,
         [user_id]
     );
 
