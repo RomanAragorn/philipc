@@ -173,3 +173,46 @@ export async function updateProductImages(
         };
     }
 }
+
+export async function deleteProduct(
+    listingId: number
+): Promise<{ success: boolean; message: string }> {
+    try {
+        // Get all product images to delete from R2
+        const [images] = await pool.query<Row<{ image_url: string }>[]>(
+            'SELECT image_url FROM product_images WHERE listing_id = ?',
+            [listingId]
+        );
+
+        // Delete images from R2
+        for (const img of images) {
+            try {
+                const url = new URL(img.image_url);
+                const key = url.pathname.substring(1);
+
+                await r2.send(
+                    new DeleteObjectCommand({
+                        Bucket: process.env.R2_BUCKET_NAME!,
+                        Key: key,
+                    })
+                );
+            } catch (error) {
+                console.error('Failed to delete image from R2:', error);
+            }
+        }
+
+        // Delete product (this will cascade delete images and other related data due to foreign keys)
+        await pool.execute('DELETE FROM products WHERE listing_id = ?', [listingId]);
+
+        return {
+            success: true,
+            message: 'Product deleted successfully',
+        };
+    } catch (error) {
+        console.error('Delete product error:', error);
+        return {
+            success: false,
+            message: 'Failed to delete product',
+        };
+    }
+}

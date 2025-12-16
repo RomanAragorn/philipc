@@ -19,7 +19,9 @@ import {
     Package,
     User,
     Edit,
+    Trash2,
 } from 'lucide-react';
+import { deleteProductAction } from './actions';
 
 const ProductDetailPage: React.FC = () => {
     const { id } = useParams();
@@ -31,6 +33,8 @@ const ProductDetailPage: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [recommendations, setRecommendations] = useState<ProductType[]>([]);
     const [user, setUser] = useState<UserSession | null>(null);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
         if (!id) return;
@@ -109,6 +113,25 @@ const ProductDetailPage: React.FC = () => {
     const prevImage = (): void => {
         if (!images.length) return;
         setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+    };
+
+    const handleDelete = async (): Promise<void> => {
+        if (!product) return;
+        setIsDeleting(true);
+        try {
+            const result = await deleteProductAction(product.listing_id);
+            if (result.success) {
+                router.push('/products');
+            } else {
+                alert(result.message);
+            }
+        } catch (error) {
+            console.error('Delete error:', error);
+            alert('Failed to delete product');
+        } finally {
+            setIsDeleting(false);
+            setShowDeleteModal(false);
+        }
     };
 
     return (
@@ -261,6 +284,12 @@ const ProductDetailPage: React.FC = () => {
                                         <Edit className="h-5 w-5" />
                                         Edit Listing
                                     </Link>
+                                    <button
+                                        onClick={() => setShowDeleteModal(true)}
+                                        className="rounded-lg border border-red-300 bg-red-50 p-3 hover:bg-red-100 dark:border-red-600 dark:bg-red-900/20 dark:hover:bg-red-900/40"
+                                    >
+                                        <Trash2 className="h-5 w-5 text-red-600 dark:text-red-400" />
+                                    </button>
                                     <button className="rounded-lg border border-gray-300 p-3 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-800">
                                         <Share2 className="h-5 w-5 text-gray-600 dark:text-gray-400" />
                                     </button>
@@ -409,6 +438,43 @@ const ProductDetailPage: React.FC = () => {
                     </div>
                 )}
             </div>
+
+            {/* Delete Confirmation Modal */}
+            {showDeleteModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+                    <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl dark:bg-gray-800">
+                        <div className="mb-4 flex items-center gap-3">
+                            <div className="rounded-full bg-red-100 p-3 dark:bg-red-900/20">
+                                <Trash2 className="h-6 w-6 text-red-600 dark:text-red-400" />
+                            </div>
+                            <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                                Delete Product
+                            </h3>
+                        </div>
+                        <p className="mb-6 text-gray-600 dark:text-gray-400">
+                            Are you sure you want to delete &quot;{product?.item_name}&quot;? This
+                            action cannot be undone and will permanently remove the listing and all
+                            its images.
+                        </p>
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => setShowDeleteModal(false)}
+                                disabled={isDeleting}
+                                className="flex-1 rounded-lg border border-gray-300 px-4 py-2 font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleDelete}
+                                disabled={isDeleting}
+                                className="flex-1 rounded-lg bg-red-600 px-4 py-2 font-medium text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-red-600 dark:hover:bg-red-700"
+                            >
+                                {isDeleting ? 'Deleting...' : 'Delete'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <Footer />
         </div>
