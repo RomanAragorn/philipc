@@ -6,6 +6,7 @@ interface GetProductResponse {
     message: string;
     data: {
         product: Product[];
+        images: string[];
     } | null;
 }
 
@@ -16,6 +17,13 @@ export async function getSpecificProduct(listingId: number): Promise<GetProductR
                                   JOIN users 
                                   ON products.seller_id = users.user_id 
                                   WHERE listing_id = ?`,
+        [listingId]
+    );
+
+    const [images] = await pool.query<Row<{ images: string }>[]>(
+        `SELECT image_url 
+            FROM product_images
+            WHERE listing_id = ?`,
         [listingId]
     );
 
@@ -32,6 +40,7 @@ export async function getSpecificProduct(listingId: number): Promise<GetProductR
         message: 'Product Fetched Successfully',
         data: {
             product: product[0],
+            images: images.map((img) => img.image_url),
         },
     };
 }

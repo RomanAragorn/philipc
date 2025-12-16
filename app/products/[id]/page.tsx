@@ -25,6 +25,7 @@ const ProductDetailPage: React.FC = () => {
     const router = useRouter();
 
     const [product, setProduct] = useState<ProductType | null>(null);
+    const [images, setImages] = useState<string[]>([]);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [loading, setLoading] = useState(true);
     const [recommendations, setRecommendations] = useState<ProductType[]>([]);
@@ -38,8 +39,10 @@ const ProductDetailPage: React.FC = () => {
                 if (!res.ok) throw new Error('Failed to fetch product');
                 const json = await res.json();
                 const product = json.data.product[0];
+                const images = json.data.images;
 
                 setProduct(product);
+                setImages(images);
 
                 const recRes = await fetch(`/api/products?exclude=${id}&limit=4`);
                 if (!recRes.ok) throw new Error('Failed to fetch recommendations');
@@ -90,13 +93,13 @@ const ProductDetailPage: React.FC = () => {
         );
 
     const nextImage = (): void => {
-        if (!product) return;
-        setCurrentImageIndex((prev) => (prev + 1) % product.images!.length);
+        if (!images.length) return;
+        setCurrentImageIndex((prev) => (prev + 1) % images.length);
     };
 
     const prevImage = (): void => {
-        if (!product.images) return;
-        setCurrentImageIndex((prev) => (prev === 0 ? product.images!.length - 1 : prev - 1));
+        if (!images.length) return;
+        setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
     };
 
     return (
@@ -126,16 +129,16 @@ const ProductDetailPage: React.FC = () => {
                     {/* Image Carousel */}
                     <div className="space-y-4">
                         <div className="relative aspect-square h-100 w-full overflow-hidden rounded-lg bg-white shadow-sm">
-                            {product.images && (
+                            {images.length > 0 && (
                                 <>
                                     <Image
-                                        src={product.images[currentImageIndex]}
+                                        src={images[currentImageIndex]}
                                         alt={product.item_name}
                                         fill
                                         className="object-cover"
                                         priority
                                     />
-                                    {product.images.length > 1 && (
+                                    {images.length > 1 && (
                                         <>
                                             <button
                                                 onClick={prevImage}
@@ -156,9 +159,9 @@ const ProductDetailPage: React.FC = () => {
                         </div>
 
                         {/* Thumbnails */}
-                        {product.images && product.images.length > 1 && (
+                        {images.length > 1 && (
                             <div className="mx-auto flex w-fit space-x-2">
-                                {product.images.map((img, idx) => (
+                                {images.map((img, idx) => (
                                     <button
                                         key={idx}
                                         onClick={() => setCurrentImageIndex(idx)}
@@ -239,7 +242,7 @@ const ProductDetailPage: React.FC = () => {
                         </h3>
                         <div className="flex items-start space-x-4">
                             <div className="relative h-16 w-16 overflow-hidden rounded-full bg-gray-200">
-                                {product.images ? (
+                                {product.image_url ? (
                                     <Image
                                         src={product.seller_avatar || ''}
                                         alt={`${product.full_name}`}
