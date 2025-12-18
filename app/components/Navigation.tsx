@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { moreItems, NavItem, navItems } from '@/app/data/navItems';
 import { userSettings } from '@/app/data/userSettings';
 import Button from '@/app/components/Button';
-import { Search, ChevronDown, CircleUser } from 'lucide-react';
+import { Search, ChevronDown, CircleUser, Menu } from 'lucide-react';
 import ThemeToggle from '@/app/components/ThemeToggle';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { logout } from '@/app/(auth)/login/actions';
@@ -63,9 +63,9 @@ const Navigation: React.FC = () => {
     };
 
     return (
-        <nav className="sticky top-0 right-0 left-0 z-999 border-gray-200 bg-linear-to-r from-[#003d4d]/85 to-[#0081b3]/85 shadow-xl backdrop-blur-2xl dark:from-gray-900 dark:to-gray-900">
+        <nav className="sticky top-0 right-0 left-0 z-999 border-gray-200 bg-linear-to-r from-[#003d4d]/85 to-[#0081b3]/85 shadow-xl dark:from-gray-900 dark:to-gray-900">
             <div
-                className={`mx-auto flex items-center justify-between px-5 py-4 md:px-10 lg:px-15`}
+                className={`mx-auto flex items-center justify-between px-5 py-4 backdrop-blur-3xl md:px-10 lg:px-15`}
             >
                 {/* Logo */}
                 <Link
@@ -108,7 +108,7 @@ const Navigation: React.FC = () => {
                         </div>
 
                         {/* Desktop User Icon */}
-                        <div className="relative hidden md:inline">
+                        <div className="relative hidden lg:inline">
                             {user ? (
                                 <>
                                     <button
@@ -199,12 +199,12 @@ const Navigation: React.FC = () => {
                     </div>
 
                     {/* Mobile User Icon */}
-                    {/* <button
+                    <button
                         onClick={() => setUserMenuOpen(!userMenuOpen)}
-                        className="me-1 p-2.5 text-gray-500 md:hidden dark:text-gray-400"
+                        className="me-1 pl-2.5 text-gray-500 lg:hidden dark:text-gray-400"
                     >
-                        <CircleUser className="h-8 w-8 text-white" />
-                    </button> */}
+                        <Menu className="h-8 w-8 text-white" />
+                    </button>
                 </div>
 
                 {/* Dekstop Nav Items */}
@@ -264,24 +264,43 @@ const Navigation: React.FC = () => {
             </div>
 
             {/* Mobile User Menu */}
-            {userMenuOpen && (
-                <div className="border-t border-gray-200/50 backdrop-blur-lg lg:hidden">
-                    <div className="mx-auto max-w-7xl space-y-1 px-4 py-3">
-                        {userSettings.map((item) => {
-                            return (
+            {userMenuOpen && user && (
+                <div className="lg:hidden">
+                    <div className="absolute z-100 w-full max-w-7xl space-y-1 rounded-b-2xl border-b border-gray-500/70 bg-white/60 px-4 py-3 backdrop-blur-xl">
+                        <ul>
+                            <li>
                                 <Link
-                                    key={item.id}
-                                    href={item.href}
-                                    onClick={() => setUserMenuOpen(!userMenuOpen)}
-                                    className={`hover:bg-dark-primary flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-white transition-all duration-200`}
+                                    href={`/users/${user.username}`}
+                                    className={`hover:bg-dark-primary flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-black transition-all duration-200`}
                                 >
-                                    {/* <Icon className="w-5 h-5" /> */}
-                                    <div>
-                                        <div className="font-medium">{item.label}</div>
-                                    </div>
+                                    <div className="font-medium">View Profile</div>
                                 </Link>
-                            );
-                        })}
+                            </li>
+                            {userSettings.map((item) => {
+                                return (
+                                    <Link
+                                        key={item.id}
+                                        href={item.href}
+                                        onClick={() => setUserMenuOpen(!userMenuOpen)}
+                                        className={`hover:bg-dark-primary flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-black transition-all duration-200`}
+                                    >
+                                        {/* <Icon className="w-5 h-5" /> */}
+                                        <div>
+                                            <div className="font-medium">{item.label}</div>
+                                        </div>
+                                    </Link>
+                                );
+                            })}
+
+                            <li>
+                                <button
+                                    onClick={handleLogout}
+                                    className={`hover:bg-dark-primary flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-black transition-all duration-200`}
+                                >
+                                    <div className="font-medium">Log Out</div>
+                                </button>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             )}

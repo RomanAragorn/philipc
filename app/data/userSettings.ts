@@ -9,11 +9,6 @@ export interface UserSetting {
 
 export const userSettings: UserSetting[] = [
     {
-        id: 1,
-        label: 'Profile',
-        href: '/profile',
-    },
-    {
         id: 2,
         label: 'Settings',
         href: '/settings',
