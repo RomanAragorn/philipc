@@ -1,8 +1,12 @@
 import { CreateProductInput } from '@/app/data/types';
 import { getProducts, postProduct, filterProducts } from '@/app/lib/queries/products';
+import { verifySession } from '@/app/lib/session';
 
 export async function GET(req: Request): Promise<Response> {
     const { searchParams } = new URL(req.url);
+
+    const session = await verifySession();
+    const excludeSellerId = session?.userId ? Number(session.userId) : undefined;
 
     const category = searchParams.get('category') || '';
     const search = searchParams.get('search') || '';
@@ -18,6 +22,7 @@ export async function GET(req: Request): Promise<Response> {
         minPrice,
         maxPrice,
         sort,
+        excludeSellerId,
     };
 
     if (category || search || condition || minPrice || maxPrice || sort) {
@@ -25,7 +30,7 @@ export async function GET(req: Request): Promise<Response> {
         return Response.json(products);
     }
 
-    const products = await getProducts();
+    const products = await getProducts(excludeSellerId);
     return Response.json(products);
 }
 

@@ -26,19 +26,29 @@ interface Filters {
     minPrice: string;
     maxPrice: string;
     sort: string;
+    excludeSellerId?: number;
 }
 
-export async function getProducts(): Promise<GetProductResponse> {
-    const [products] = await pool.query<
-        Row<Product>[]
-    >(`SELECT p.*, CONCAT(u.first_name, " ", u.last_name) AS full_name, pi.image_url
+export async function getProducts(excludeSellerId?: number): Promise<GetProductResponse> {
+    const params: Array<number> = [];
+    let whereClause = 'WHERE p.is_avail = 1';
+
+    if (excludeSellerId) {
+        whereClause += ' AND p.seller_id <> ?';
+        params.push(excludeSellerId);
+    }
+
+    const [products] = await pool.query<Row<Product>[]>(
+        `SELECT p.*, CONCAT(u.first_name, " ", u.last_name) AS full_name, pi.image_url
             FROM products p
             JOIN users u
                 ON p.seller_id = u.user_id
             LEFT JOIN product_images pi
                 ON p.listing_id = pi.listing_id
                 AND pi.is_cover = 1
-            WHERE p.is_avail=1;`);
+            ${whereClause};`,
+        params
+    );
     if (products.length === 0) {
         return {
             success: false,
@@ -132,6 +142,9 @@ export async function filterProducts(filters: Filters): Promise<GetProductRespon
     if (filters.maxPrice && filters.minPrice)
         conditions += ` AND products.item_price BETWEEN ${parseFloat(filters.minPrice)} AND ${filters.maxPrice}`;
     if (filters.sort) conditions += `  ORDER BY products.item_price ${filters.sort}`;
+
+    if (filters.excludeSellerId)
+        conditions += ` AND products.seller_id <> ${filters.excludeSellerId}`;
 
     conditions += ';';
 
