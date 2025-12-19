@@ -8,9 +8,10 @@ import Link from 'next/link';
 interface ProductProps {
     product: Product;
     showUser?: boolean;
+    showStatus?: boolean;
 }
 
-const Products: React.FC<ProductProps> = ({ product, showUser = true }) => {
+const Products: React.FC<ProductProps> = ({ product, showUser = true, showStatus = true }) => {
     return (
         <div className="flex min-h-50 flex-col rounded-2xl bg-gray-50 p-4 shadow-lg dark:bg-gray-800">
             {/* User */}
@@ -30,11 +31,29 @@ const Products: React.FC<ProductProps> = ({ product, showUser = true }) => {
                     alt="Test Image"
                     fill
                 />
+
+                {showStatus && !product.is_avail && (
+                    <>
+                        <div className="absolute inset-0 bg-black/30" />
+                        <div className="absolute top-2 left-2 z-10 rounded bg-red-600 px-2 py-1 text-xs font-semibold text-white shadow">
+                            Sold
+                        </div>
+                    </>
+                )}
             </div>
 
             {/* Product Details */}
             <div className="my-3 flex grow flex-col justify-between gap-1 text-black dark:text-white">
-                <span className="text-lg font-semibold">{product.item_name}</span>
+                <span className="flex items-center gap-2 text-lg font-semibold">
+                    {product.item_name}
+                    {showStatus && (
+                        <span
+                            className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${product.is_avail ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-700'}`}
+                        >
+                            {product.is_avail ? 'Available' : 'Sold'}
+                        </span>
+                    )}
+                </span>
                 <span>₱{product.item_price}</span>
             </div>
 

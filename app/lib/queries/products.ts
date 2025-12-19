@@ -37,7 +37,8 @@ export async function getProducts(): Promise<GetProductResponse> {
                 ON p.seller_id = u.user_id
             LEFT JOIN product_images pi
                 ON p.listing_id = pi.listing_id
-                AND pi.is_cover = 1;`);
+                AND pi.is_cover = 1
+            WHERE p.is_avail=1;`);
     if (products.length === 0) {
         return {
             success: false,

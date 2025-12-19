@@ -65,6 +65,7 @@ const Home: React.FC = () => {
                                 <Products
                                     key={product.listing_id}
                                     product={product}
+                                    showStatus={false}
                                 />
                             );
                         })}

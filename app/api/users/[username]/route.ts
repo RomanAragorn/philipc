@@ -6,7 +6,6 @@ export async function GET(
 ): Promise<Response> {
     const { username } = await params;
     const user = await getUser(username);
-    console.log(user.data);
 
     return Response.json(user);
 }

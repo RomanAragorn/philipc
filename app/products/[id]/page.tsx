@@ -7,7 +7,7 @@ import Link from 'next/link';
 import Navigation from '@/app/components/Navigation';
 import Footer from '@/app/components/Footer';
 import Products from '@/app/components/Products';
-import { Product as ProductType, UserSession } from '@/app/data/types';
+import { Product as ProductType, Seller, UserSession } from '@/app/data/types';
 import {
     ChevronLeft,
     ChevronRight,
@@ -29,6 +29,7 @@ const ProductDetailPage: React.FC = () => {
 
     const [product, setProduct] = useState<ProductType | null>(null);
     const [images, setImages] = useState<string[]>([]);
+    const [seller, setSeller] = useState<Seller | null>(null);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [loading, setLoading] = useState(true);
     const [recommendations, setRecommendations] = useState<ProductType[]>([]);
@@ -51,11 +52,15 @@ const ProductDetailPage: React.FC = () => {
                 const res = await fetch(`/api/products/${id}`);
                 if (!res.ok) throw new Error('Failed to fetch product');
                 const json = await res.json();
-                const product = json.data.product[0];
-                const images = json.data.images;
+                const data = json.data;
+
+                const product = data.product;
+                const images = data.images;
+                const seller = data.review;
 
                 setProduct(product);
                 setImages(images);
+                setSeller(seller);
 
                 const recRes = await fetch(`/api/products?exclude=${id}&limit=4`);
                 if (!recRes.ok) throw new Error('Failed to fetch recommendations');
@@ -66,6 +71,7 @@ const ProductDetailPage: React.FC = () => {
                 console.error(error);
                 setProduct(null);
                 setRecommendations([]);
+                setSeller(null);
             } finally {
                 setLoading(false);
             }
@@ -255,8 +261,13 @@ const ProductDetailPage: React.FC = () => {
 
                     {/* Product Info */}
                     <div className="space-y-6">
-                        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                        <h1 className="flex items-center gap-3 text-3xl font-bold text-gray-900 dark:text-white">
                             {product.item_name}
+                            <span
+                                className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${product.is_avail ? 'bg-green-100 text-green-800' : 'bg-gray-200 text-gray-700'}`}
+                            >
+                                {product.is_avail ? 'Available' : 'Sold'}
+                            </span>
                         </h1>
                         <p className="text-primary mt-2 text-4xl font-bold">
                             ₱{product.item_price}
@@ -332,7 +343,7 @@ const ProductDetailPage: React.FC = () => {
                 </div>
 
                 {/* Seller Info */}
-                {product.full_name && (
+                {product && (
                     <div className="mb-8 rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800">
                         <h3 className="mb-4 text-xl font-semibold text-gray-900 dark:text-white">
                             Seller Information
@@ -358,15 +369,17 @@ const ProductDetailPage: React.FC = () => {
                                     <div className="flex items-center">
                                         <Star className="h-4 w-4 fill-current text-yellow-400" />
                                         <span className="ml-1 text-sm text-gray-600 dark:text-gray-400">
-                                            {/* {product.seller.rating} ({product.seller.total_sales}{' '}
-                                            reviews) */}
+                                            {seller?.avg_rating
+                                                ? Number(Number(seller.avg_rating).toFixed(2))
+                                                : ''}{' '}
+                                            ({seller?.review_count} review/s)
                                         </span>
                                     </div>
                                 </div>
                                 <div className="mt-2 grid grid-cols-3 gap-4 text-sm text-gray-600 dark:text-gray-400">
                                     <div className="flex items-center">
                                         <Package className="mr-2 h-4 w-4" />
-                                        {/* {product.seller.total_sales} sales */}
+                                        {seller?.product_count} product/s
                                     </div>
                                     <div className="flex items-center">
                                         <MapPin className="mr-2 h-4 w-4" />
@@ -388,12 +401,12 @@ const ProductDetailPage: React.FC = () => {
                 )}
 
                 {/* Reviews */}
-                <div className="mb-8 rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800">
+                {/* <div className="mb-8 rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800">
                     <h3 className="mb-4 text-xl font-semibold text-gray-900 dark:text-white">
                         Seller Reviews
                     </h3>
                     <div className="space-y-4">
-                        {/* {product.map((review) => (
+                        {product.map((review) => (
                             <div
                                 key={review.id}
                                 className="border-b border-gray-200 pb-4 last:border-b-0 dark:border-gray-700"
@@ -416,9 +429,9 @@ const ProductDetailPage: React.FC = () => {
                                 </div>
                                 <p className="text-gray-700 dark:text-gray-300">{review.comment}</p>
                             </div>
-                        ))} */}
+                        ))}
                     </div>
-                </div>
+                </div> */}
 
                 {/* Recommendations */}
                 {recommendations.length > 0 && (
@@ -432,6 +445,7 @@ const ProductDetailPage: React.FC = () => {
                                     key={r.listing_id}
                                     product={r}
                                     showUser
+                                    showStatus={false}
                                 />
                             ))}
                         </div>

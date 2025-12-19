@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Navigation from '@/app/components/Navigation';
 import Products from '@/app/components/Products';
 import { useParams } from 'next/navigation';
-import { Product, Review, User as UserType } from '@/app/data/types';
+import { Product, Review, RatingSummary, User as UserType } from '@/app/data/types';
 import { Star, User } from 'lucide-react';
 
 const UserPage: React.FC = () => {
@@ -13,9 +13,9 @@ const UserPage: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'listings' | 'reviews'>('listings');
 
     const [user, setUser] = useState<UserType | null>(null);
-    const [rating, setRating] = useState<number | null>(null);
+    const [rating, setRating] = useState<RatingSummary | null>(null);
     const [listings, setListings] = useState<Product[]>([]);
-    const [reviews, setreviews] = useState<Review[]>([]);
+    const [reviews, setReviews] = useState<Review[]>([]);
 
     const [loading, setLoading] = useState(true);
 
@@ -26,12 +26,11 @@ const UserPage: React.FC = () => {
                 if (!res.ok) throw new Error('User not found');
                 const json = await res.json();
                 const data = json.data;
-                const { user, avg_rating, listings, reviews } = data;
-
+                const { user, rating, listings, reviews } = data;
                 setUser(user);
-                setRating(avg_rating);
+                setRating(rating);
                 setListings(listings);
-                setreviews(reviews);
+                setReviews(reviews);
             } catch (err) {
                 console.log(err);
             } finally {
@@ -145,10 +144,12 @@ const UserPage: React.FC = () => {
                         <Star className="h-8 w-8 text-amber-300" />
                         <div className="flex flex-col">
                             <span className="text-lg font-semibold text-amber-300">
-                                {rating ? Number(Number(rating).toFixed(2)) : ''}
+                                {rating?.avg_rating
+                                    ? Number(Number(rating.avg_rating).toFixed(2))
+                                    : ''}
                             </span>
                             <span className="hidden text-xs text-white sm:block">
-                                {reviews.length} review/s
+                                {rating?.count} review/s
                             </span>
                         </div>
                     </div>

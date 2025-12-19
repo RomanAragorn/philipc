@@ -1,9 +1,11 @@
 import { RowDataPacket } from 'mysql2';
 
 export type Product = {
+    full_name: string;
+    username: string;
     listing_id: number;
     seller_id: number;
-    seller_avatar?: string;
+    seller_avatar?: string | null;
     category: string;
     item_name: string;
     item_condition: string;
@@ -11,9 +13,13 @@ export type Product = {
     item_description: string;
     item_location: string;
     is_avail: boolean;
-    full_name: string;
-    username: string;
     image_url?: string;
+};
+
+export type Seller = {
+    avg_rating: number;
+    review_count: number;
+    product_count: number;
 };
 
 export interface CreateProductInput {
@@ -56,6 +62,11 @@ export type Review = {
     item_name: string;
     item_price: number;
     image?: string;
+};
+
+export type RatingSummary = {
+    avg_rating: number;
+    count: number;
 };
 
 export type Row<T> = T & RowDataPacket;
