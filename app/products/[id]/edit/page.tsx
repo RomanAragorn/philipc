@@ -48,7 +48,7 @@ const EditListingPage: React.FC = () => {
                 const productRes = await fetch(`/api/products/${id}`);
                 if (!productRes.ok) throw new Error('Failed to fetch product');
                 const productData = await productRes.json();
-                const product = productData.data.product[0];
+                const product = productData.data.product;
                 const images = productData.data.images;
 
                 // Check if user owns this product
