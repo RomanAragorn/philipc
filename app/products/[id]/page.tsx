@@ -36,6 +36,11 @@ const ProductDetailPage: React.FC = () => {
     const [user, setUser] = useState<UserSession | null>(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [isOfferModalOpen, setIsOfferModalOpen] = useState(false);
+    const [offerPrice, setOfferPrice] = useState('');
+    const [offerMessage, setOfferMessage] = useState('');
+    const [offerError, setOfferError] = useState('');
+    const [offerStatus, setOfferStatus] = useState<'idle' | 'success'>('idle');
 
     useEffect(() => {
         if (!id) return;
@@ -138,6 +143,28 @@ const ProductDetailPage: React.FC = () => {
             setIsDeleting(false);
             setShowDeleteModal(false);
         }
+    };
+
+    const openOfferModal = (): void => {
+        setOfferError('');
+        setOfferStatus('idle');
+        setIsOfferModalOpen(true);
+    };
+
+    const closeOfferModal = (): void => {
+        setIsOfferModalOpen(false);
+    };
+
+    const handleOfferSubmit = (): void => {
+        const numericPrice = Number(offerPrice);
+        if (!Number.isFinite(numericPrice) || numericPrice <= 0) {
+            setOfferError('Enter a valid offer amount.');
+            return;
+        }
+
+        setOfferError('');
+        setOfferStatus('success');
+        setIsOfferModalOpen(false);
     };
 
     return (
@@ -261,36 +288,40 @@ const ProductDetailPage: React.FC = () => {
 
                     {/* Product Info */}
                     <div className="space-y-6">
-                        <h1 className="flex items-center gap-3 text-3xl font-bold text-gray-900 dark:text-white">
-                            {product.item_name}
-                            <span
-                                className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${product.is_avail ? 'bg-green-100 text-green-800' : 'bg-gray-200 text-gray-700'}`}
-                            >
-                                {product.is_avail ? 'Available' : 'Sold'}
-                            </span>
-                        </h1>
-                        <p className="text-primary mt-2 text-4xl font-bold">
-                            ₱{product.item_price}
-                        </p>
-
-                        <div className="mt-2 flex items-center space-x-4">
-                            <span
-                                className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${product.item_condition === 'Brand New' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}
-                            >
-                                {product.item_condition}
-                            </span>
-                            <span className="flex items-center text-gray-600 dark:text-gray-400">
-                                <MapPin className="mr-1 h-4 w-4" /> {product.item_location}
-                            </span>
+                        <div className="space-y-3">
+                            <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
+                                {product.item_name}
+                            </h1>
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-3xl font-bold text-blue-500 dark:text-white">
+                                        ₱{product.item_price}
+                                    </p>
+                                </div>
+                                <div className="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold tracking-wide text-blue-700 uppercase dark:bg-blue-900/30 dark:text-blue-200">
+                                    Asking Price
+                                </div>
+                            </div>
+                            <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600 dark:text-gray-300">
+                                <span
+                                    className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${product.is_avail ? 'bg-green-100 text-green-800' : 'bg-gray-200 text-gray-700'}`}
+                                >
+                                    {product.is_avail ? 'Available' : 'Sold'}
+                                </span>
+                                <span className="flex items-center rounded-full bg-gray-100 px-3 py-1 dark:bg-gray-800">
+                                    <MapPin className="mr-1 h-4 w-4" /> {product.item_location}
+                                </span>
+                            </div>
                         </div>
 
-                        {/* Actions */}
-                        <div className="flex space-x-4">
+                        <hr className="border-gray-400" />
+
+                        <div className="">
                             {user && user.user_id === product.seller_id ? (
-                                <>
+                                <div className="mt-4 flex gap-3">
                                     <Link
                                         href={`/products/${id}/edit`}
-                                        className="bg-primary flex flex-1 items-center justify-center gap-2 rounded-lg px-6 py-3 font-semibold text-white hover:bg-blue-700 dark:bg-blue-600"
+                                        className="bg-primary flex flex-1 items-center justify-center gap-2 rounded-lg px-4 py-3 text-center text-sm font-semibold text-white hover:bg-blue-700 dark:bg-blue-600"
                                     >
                                         <Edit className="h-5 w-5" />
                                         Edit Listing
@@ -299,29 +330,57 @@ const ProductDetailPage: React.FC = () => {
                                         onClick={() => setShowDeleteModal(true)}
                                         className="rounded-lg border border-red-300 bg-red-50 p-3 hover:bg-red-100 dark:border-red-600 dark:bg-red-900/20 dark:hover:bg-red-900/40"
                                     >
-                                        <Trash2 className="h-5 w-5 text-red-600 dark:text-red-400" />
+                                        <Trash2 className="h-5 w-5 text-red-600 hover:cursor-pointer dark:text-red-400" />
                                     </button>
-                                    <button className="rounded-lg border border-gray-300 p-3 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-800">
-                                        <Share2 className="h-5 w-5 text-gray-600 dark:text-gray-400" />
-                                    </button>
-                                </>
+                                </div>
                             ) : (
-                                <>
-                                    <button className="bg-primary flex-1 rounded-lg px-6 py-3 font-semibold text-white hover:bg-blue-700 dark:bg-blue-600">
-                                        Contact Seller
-                                    </button>
-                                    <button className="rounded-lg border border-gray-300 p-3 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-800">
+                                <div className="mt-4 flex gap-2">
+                                    <div className="grid flex-1 gap-3 sm:grid-cols-2">
+                                        {/* Offer*/}
+                                        <button
+                                            onClick={openOfferModal}
+                                            className="bg-primary items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-semibold text-white shadow-sm hover:cursor-pointer hover:bg-blue-700 dark:bg-blue-600"
+                                        >
+                                            Make an Offer
+                                        </button>
+
+                                        {/* Contact */}
+                                        <a
+                                            href="https://www.facebook.com/"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="flex items-center justify-center gap-2 rounded-lg border border-gray-300 px-4 py-3 text-sm font-semibold text-gray-800 hover:cursor-pointer hover:border-blue-400 hover:text-blue-700 dark:border-gray-700 dark:text-gray-200 dark:hover:border-blue-500 dark:hover:text-blue-100"
+                                        >
+                                            Contact Seller
+                                        </a>
+                                    </div>
+
+                                    {/* Share */}
+                                    <button className="rounded-lg border border-gray-300 p-3 hover:cursor-pointer hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-800">
                                         <Share2 className="h-5 w-5 text-gray-600 dark:text-gray-400" />
                                     </button>
-                                </>
+                                </div>
+                            )}
+                            {offerStatus === 'success' && (
+                                <div className="mt-3 rounded-lg bg-green-50 px-3 py-2 text-sm text-green-800 ring-1 ring-green-200 dark:bg-green-900/20 dark:text-green-200 dark:ring-green-800/40">
+                                    Offer noted. Await seller confirmation.
+                                </div>
                             )}
                         </div>
 
                         {/* Description */}
                         <div className="rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800">
-                            <h3 className="mb-3 text-lg font-semibold text-gray-900 dark:text-white">
-                                Description
-                            </h3>
+                            <div className="flex justify-between gap-4">
+                                <h3 className="mb-1 text-lg font-semibold text-gray-900 dark:text-white">
+                                    Description
+                                </h3>
+
+                                <span
+                                    className={`mb-3 inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${product.item_condition === 'Brand New' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}
+                                >
+                                    {product.item_condition}
+                                </span>
+                            </div>
                             <p className="leading-relaxed text-gray-700 dark:text-gray-300">
                                 {product.item_description}
                             </p>
@@ -452,6 +511,92 @@ const ProductDetailPage: React.FC = () => {
                     </div>
                 )}
             </div>
+
+            {/* Offer Modal */}
+            {isOfferModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+                    <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl ring-1 ring-gray-100 dark:bg-gray-900 dark:ring-gray-700">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-xs font-semibold tracking-wide text-blue-600 uppercase dark:text-blue-200">
+                                    Make an offer
+                                </p>
+                                <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                                    {product?.item_name}
+                                </h3>
+                            </div>
+                            <button
+                                onClick={closeOfferModal}
+                                className="rounded-full border border-gray-200 p-2 hover:border-blue-400 dark:border-gray-700 dark:hover:border-blue-500"
+                            >
+                                <ArrowLeft className="h-4 w-4" />
+                            </button>
+                        </div>
+
+                        <div className="mt-4 space-y-4">
+                            <div>
+                                <label className="mb-1 block text-sm font-medium text-gray-900 dark:text-white">
+                                    Your offer (₱)
+                                </label>
+                                <input
+                                    type="number"
+                                    min="0"
+                                    value={offerPrice}
+                                    onChange={(e) => setOfferPrice(e.target.value)}
+                                    className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                                    placeholder={`e.g., ${product ? Math.max(0, Number(product.item_price) - 500).toFixed(0) : '0'}`}
+                                />
+                            </div>
+
+                            <div>
+                                <label className="mb-1 block text-sm font-medium text-gray-900 dark:text-white">
+                                    Message (optional)
+                                </label>
+                                <textarea
+                                    value={offerMessage}
+                                    onChange={(e) => setOfferMessage(e.target.value)}
+                                    rows={3}
+                                    className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                                    placeholder="Share preferred meetup time or condition notes"
+                                />
+                            </div>
+
+                            {offerError && (
+                                <div className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800 ring-1 ring-red-200 dark:bg-red-900/20 dark:text-red-200 dark:ring-red-800/40">
+                                    {offerError}
+                                </div>
+                            )}
+
+                            <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                                <span className="rounded-full bg-gray-100 px-2.5 py-1 dark:bg-gray-800">
+                                    No upfront payments
+                                </span>
+                                <span className="rounded-full bg-gray-100 px-2.5 py-1 dark:bg-gray-800">
+                                    Meet in a safe place
+                                </span>
+                                <span className="rounded-full bg-gray-100 px-2.5 py-1 dark:bg-gray-800">
+                                    Respect seller response time
+                                </span>
+                            </div>
+
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={handleOfferSubmit}
+                                    className="flex-1 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-700"
+                                >
+                                    Send Offer
+                                </button>
+                                <button
+                                    onClick={closeOfferModal}
+                                    className="rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Delete Confirmation Modal */}
             {showDeleteModal && (
