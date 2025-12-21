@@ -45,7 +45,8 @@ export async function getSpecificProduct(listingId: number): Promise<GetProductR
                 AVG(review_rating) AS avg_rating,
                 COUNT(review_rating) as review_count,
                 (SELECT COUNT(*) FROM products
-                    WHERE seller_id = ?) as product_count
+                    WHERE seller_id = ?
+                        AND is_avail = 1) as product_count
              FROM reviews r
              JOIN transactions t ON r.transac_id = t.transac_id
              JOIN products p ON t.listing_id = p.listing_id
