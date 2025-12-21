@@ -13,7 +13,8 @@ interface GetProductResponse {
 
 export async function getSpecificProduct(listingId: number): Promise<GetProductResponse> {
     const [product] = await pool.query<Row<Product>[]>(
-        `SELECT CONCAT(users.first_name, " ", users.last_name) AS full_name, 
+        `SELECT CONCAT(users.first_name, " ", users.last_name) AS full_name,
+                users.fb_link, 
                 username,
                 profile_pic_url,
 

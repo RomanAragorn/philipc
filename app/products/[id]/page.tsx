@@ -292,6 +292,8 @@ const ProductDetailPage: React.FC = () => {
                             <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
                                 {product.item_name}
                             </h1>
+                            <hr className="border-gray-400" />
+
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-3xl font-bold text-blue-500 dark:text-white">
@@ -313,8 +315,6 @@ const ProductDetailPage: React.FC = () => {
                                 </span>
                             </div>
                         </div>
-
-                        <hr className="border-gray-400" />
 
                         <div className="">
                             {user && user.user_id === product.seller_id ? (
@@ -346,7 +346,7 @@ const ProductDetailPage: React.FC = () => {
 
                                         {/* Contact */}
                                         <a
-                                            href="https://www.facebook.com/"
+                                            href={product.fb_link}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="flex items-center justify-center gap-2 rounded-lg border border-gray-300 px-4 py-3 text-sm font-semibold text-gray-800 hover:cursor-pointer hover:border-blue-400 hover:text-blue-700 dark:border-gray-700 dark:text-gray-200 dark:hover:border-blue-500 dark:hover:text-blue-100"

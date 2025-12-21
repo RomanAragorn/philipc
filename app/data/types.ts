@@ -2,6 +2,7 @@ import { RowDataPacket } from 'mysql2';
 
 export type Product = {
     full_name: string;
+    fb_link: string;
     username: string;
     listing_id: number;
     seller_id: number;
