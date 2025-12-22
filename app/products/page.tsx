@@ -10,9 +10,7 @@ import { sortOptions, conditionOptions } from '@/app/data/searchFilters';
 import { ArrowLeft, Filter, Search, X } from 'lucide-react';
 import Link from 'next/link';
 import Footer from '@/app/components/Footer';
-import { connection } from 'next/server';
 
-await connection();
 const ProductsPage: React.FC = () => {
     const searchParams = useSearchParams();
     const router = useRouter();
