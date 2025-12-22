@@ -1,14 +1,23 @@
 import { getSpecificProduct } from '@/app/lib/queries/specificProduct';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(
-    req: Response,
-    { params }: { params: { listingId: number } }
-): Promise<Response> {
-    const { listingId } = await params;
+    req: NextRequest,
+    { params }: { params: Promise<{ listingId: string }> }
+): Promise<NextResponse> {
+    try {
+        const { listingId } = await params;
 
-    console.log(listingId);
+        console.log(listingId);
 
-    const product = await getSpecificProduct(listingId);
+        const product = await getSpecificProduct(listingId);
 
-    return Response.json(product);
+        return NextResponse.json(product);
+    } catch (error) {
+        console.error('GET /products/[id] error:', error);
+        return new NextResponse(
+            JSON.stringify({ success: false, message: 'Failed to fetch specific product' }),
+            { status: 500 }
+        );
+    }
 }

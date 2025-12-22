@@ -2,6 +2,7 @@ import { RowDataPacket } from 'mysql2';
 
 export type Product = {
     full_name: string;
+    fb_link: string;
     username: string;
     listing_id: number;
     seller_id: number;
@@ -67,6 +68,16 @@ export type Review = {
 export type RatingSummary = {
     avg_rating: number;
     count: number;
+};
+
+export type Offer = {
+    offer_id: number;
+    listing_id: number;
+    buyer_id: number;
+    offer_price: number;
+    offer_status: 'Pending' | 'Accepted' | 'Rejected';
+    created_at: string;
+    buyer_name?: string;
 };
 
 export type Row<T> = T & RowDataPacket;

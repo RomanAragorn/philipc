@@ -11,6 +11,9 @@ import Image from 'next/image';
 import { useDropzone } from 'react-dropzone';
 import { UserSession } from '@/app/data/types';
 import { createListing, CreateListingState } from './actions';
+import { connection } from 'next/server';
+
+await connection();
 
 const CreateListingPage: React.FC = () => {
     const [user, setUser] = useState<UserSession | null>(null);
