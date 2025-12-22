@@ -141,7 +141,7 @@ export async function filterProducts(filters: Filters): Promise<GetProductRespon
         conditions += ` AND products.item_price >= ${parseFloat(filters.minPrice)}`;
     if (filters.maxPrice && filters.minPrice)
         conditions += ` AND products.item_price BETWEEN ${parseFloat(filters.minPrice)} AND ${filters.maxPrice}`;
-    
+
     if (filters.excludeSellerId)
         conditions += ` AND products.seller_id <> ${filters.excludeSellerId}`;
 
