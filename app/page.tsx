@@ -9,6 +9,9 @@ import Products from '@/app/components/Products';
 import CategoriesList from '@/app/components/CategoriesList';
 import Footer from '@/app/components/Footer';
 import { Product as ProductType } from '@/app/data/types';
+import { connection } from 'next/server';
+
+await connection();
 
 const Home: React.FC = () => {
     const [products, setProducts] = useState<ProductType[]>([]);
