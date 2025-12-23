@@ -89,13 +89,12 @@ export async function POST(
     }
 }
 
-export async function PATCH(
-    req: NextRequest,
-    { params }: { params: Promise<{ listingId: string }> }
-): Promise<NextResponse> {
+export async function PATCH(req: NextRequest): Promise<NextResponse> {
     try {
         const session = await verifySession();
-        if (!session?.userId) {
+        const userId = session?.userId;
+
+        if (!userId) {
             return new NextResponse(JSON.stringify({ success: false, message: 'Unauthorized' }), {
                 status: 401,
             });
@@ -126,7 +125,8 @@ export async function PATCH(
         }
 
         // Update offer status
-        const result = await updateOfferStatus(offerId, Number(session.userId), status);
+        const result = await updateOfferStatus(offerId, Number(userId), status);
+
         return NextResponse.json(result);
     } catch (error) {
         console.error('PATCH /offers error:', error);
