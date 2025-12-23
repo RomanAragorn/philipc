@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
-import Products from '@/app/components/Products';
+import Products from '@/app/components/products/Products';
 import Navigation from '@/app/components/Navigation';
 import Dropdown from '@/app/components/Dropdown';
 import { Product as ProductType } from '@/app/data/types';

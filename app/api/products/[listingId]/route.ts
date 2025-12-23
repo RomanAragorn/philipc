@@ -8,8 +8,6 @@ export async function GET(
     try {
         const { listingId } = await params;
 
-        console.log(listingId);
-
         const product = await getSpecificProduct(listingId);
 
         return NextResponse.json(product);

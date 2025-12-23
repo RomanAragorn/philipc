@@ -6,7 +6,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Navigation from '@/app/components/Navigation';
 import Footer from '@/app/components/Footer';
-import Products from '@/app/components/Products';
+import Products from '@/app/components/products/Products';
+import SellerOffers from '@/app/components/products/SellerOffers';
 import { Product as ProductType, Seller, UserSession } from '@/app/data/types';
 import {
     ChevronLeft,
@@ -477,6 +478,16 @@ const ProductDetailPage: React.FC = () => {
                                 View Profile
                             </Link>
                         </div>
+                    </div>
+                )}
+
+                {/* Seller Offers Section - Only visible to the seller */}
+                {user && product && user.user_id === product.seller_id && (
+                    <div className="mb-8">
+                        <SellerOffers
+                            listingId={product.listing_id}
+                            productPrice={product.item_price}
+                        />
                     </div>
                 )}
 

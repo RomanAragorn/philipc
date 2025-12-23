@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Navigation from '@/app/components/Navigation';
-import Products from '@/app/components/Products';
+import Products from '@/app/components/products/Products';
 import { useParams } from 'next/navigation';
 import { Product, Review, RatingSummary, User as UserType } from '@/app/data/types';
 import { Star, User } from 'lucide-react';

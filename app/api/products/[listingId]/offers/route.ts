@@ -1,5 +1,5 @@
 import { verifySession } from '@/app/lib/session';
-import { createOffer, getOffersForListing } from '@/app/lib/queries/offers';
+import { createOffer, getOffersForListing, updateOfferStatus } from '@/app/lib/queries/offers';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(
@@ -82,6 +82,56 @@ export async function POST(
         console.error('POST /offers error:', error);
         return new NextResponse(
             JSON.stringify({ success: false, message: 'Failed to submit offer' }),
+            {
+                status: 500,
+            }
+        );
+    }
+}
+
+export async function PATCH(
+    req: NextRequest,
+    { params }: { params: Promise<{ listingId: string }> }
+): Promise<NextResponse> {
+    try {
+        const session = await verifySession();
+        if (!session?.userId) {
+            return new NextResponse(JSON.stringify({ success: false, message: 'Unauthorized' }), {
+                status: 401,
+            });
+        }
+
+        const body = await req.json();
+        if (!body) {
+            return new NextResponse(
+                JSON.stringify({ success: false, message: 'Request body required' }),
+                { status: 400 }
+            );
+        }
+
+        const offerId = Number(body?.offer_id);
+        const status = body?.status;
+
+        if (!Number.isFinite(offerId) || offerId <= 0) {
+            return new NextResponse(
+                JSON.stringify({ success: false, message: 'Invalid offer ID' }),
+                { status: 400 }
+            );
+        }
+
+        if (!['Accepted', 'Rejected'].includes(status)) {
+            return new NextResponse(JSON.stringify({ success: false, message: 'Invalid status' }), {
+                status: 400,
+            });
+        }
+
+        // Update offer status
+        const result = await updateOfferStatus(offerId, Number(session.userId), status);
+        return NextResponse.json(result);
+    } catch (error) {
+        console.error('PATCH /offers error:', error);
+        return new NextResponse(
+            JSON.stringify({ success: false, message: 'Failed to update offer' }),
             {
                 status: 500,
             }

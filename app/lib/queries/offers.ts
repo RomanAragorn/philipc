@@ -139,3 +139,53 @@ export async function updateOfferStatus(
         return { success: false, message: 'Failed to update offer status' };
     }
 }
+
+export async function getOffersForSellerProduct(
+    listingId: number,
+    sellerId: number
+): Promise<{ success: boolean; message: string; data: { offers: Offer[] } | null }> {
+    try {
+        const [products] = await pool.query<Row<{ seller_id: number }>[]>(
+            'SELECT seller_id FROM products WHERE listing_id = ?',
+            [listingId]
+        );
+
+        if (!products.length) {
+            return { success: false, message: 'Product not found', data: null };
+        }
+
+        if (products[0].seller_id !== sellerId) {
+            return {
+                success: false,
+                message: 'Not authorized to view offers for this product',
+                data: null,
+            };
+        }
+
+        // Get all offers for this listing with buyer information
+        const [offers] = await pool.query<Row<Offer>[]>(
+            `SELECT 
+                o.offer_id,
+                o.listing_id,
+                o.buyer_id,
+                o.offer_price,
+                o.offer_status,
+                o.created_at,
+                CONCAT(u.first_name, ' ', u.last_name) AS buyer_name
+             FROM offers o
+             JOIN users u ON u.user_id = o.buyer_id
+             WHERE o.listing_id = ?
+             ORDER BY o.created_at DESC`,
+            [listingId]
+        );
+
+        return {
+            success: true,
+            message: 'Offers fetched successfully',
+            data: { offers },
+        };
+    } catch (error) {
+        console.error('getOffersForSellerProduct error:', error);
+        return { success: false, message: 'Failed to fetch offers', data: null };
+    }
+}

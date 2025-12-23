@@ -5,7 +5,7 @@ import Banner from '@/app/components/HomeBanner';
 import Navigation from '@/app/components/Navigation';
 import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
-import Products from '@/app/components/Products';
+import Products from '@/app/components/products/Products';
 import CategoriesList from '@/app/components/CategoriesList';
 import Footer from '@/app/components/Footer';
 import { Product as ProductType } from '@/app/data/types';
