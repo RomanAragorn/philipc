@@ -80,7 +80,7 @@ const ProductsPage: React.FC = () => {
         <div className="flex min-h-screen flex-col bg-gray-50 dark:bg-gray-900">
             <Navigation />
 
-            <div className="mx-auto mt-4 flex max-w-7xl gap-2 p-4">
+            <div className="mx-auto mt-4 flex w-full max-w-7xl gap-2 p-4">
                 <Link
                     className="hover:cursor-pointer"
                     href={'/'}
