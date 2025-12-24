@@ -82,7 +82,7 @@ const TransactionSummary: React.FC = () => {
             </div>
             <div className="rounded-lg bg-white p-6 shadow-md dark:bg-gray-700">
                 <div className="flex items-center gap-3">
-                    <Package className="h-8 w-8 text-green-500" />
+                    <Package className="h-8 w-8 text-blue-500" />
                     <div>
                         <p className="text-sm text-gray-600 dark:text-gray-400">Sales</p>
                         <p className="text-2xl font-bold dark:text-white">{summary.sales}</p>
@@ -91,7 +91,7 @@ const TransactionSummary: React.FC = () => {
             </div>
             <div className="rounded-lg bg-white p-6 shadow-md dark:bg-gray-700">
                 <div className="flex items-center gap-3">
-                    <Send className="h-8 w-8 text-purple-500" />
+                    <Send className="h-8 w-8 text-blue-500" />
                     <div>
                         <p className="text-sm text-gray-600 dark:text-gray-400">Offers Sent</p>
                         <p className="text-2xl font-bold dark:text-white">{summary.sentOffers}</p>
@@ -100,7 +100,7 @@ const TransactionSummary: React.FC = () => {
             </div>
             <div className="rounded-lg bg-white p-6 shadow-md dark:bg-gray-700">
                 <div className="flex items-center gap-3">
-                    <Inbox className="h-8 w-8 text-orange-500" />
+                    <Inbox className="h-8 w-8 text-blue-500" />
                     <div>
                         <p className="text-sm text-gray-600 dark:text-gray-400">Offers Received</p>
                         <p className="text-2xl font-bold dark:text-white">

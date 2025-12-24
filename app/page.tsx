@@ -58,8 +58,17 @@ const Home: React.FC = () => {
                             </Link>
                         </div>
                     </div>
+                    {loading && (
+                        <div className="mb-4 grid grid-flow-row gap-5 p-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                            {[1, 2, 3, 4].map((i) => (
+                                <div
+                                    key={i}
+                                    className="h-80 animate-pulse rounded-lg bg-gray-300 dark:bg-gray-600"
+                                ></div>
+                            ))}
+                        </div>
+                    )}
                     <div className="mb-4 grid grid-flow-row gap-5 p-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                        {loading && <p>Loading...</p>}
                         {products.map((product) => {
                             return (
                                 <Products
