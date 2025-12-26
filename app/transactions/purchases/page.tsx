@@ -3,12 +3,19 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Package, Star } from 'lucide-react';
+import { Package, Star, X } from 'lucide-react';
 import { Transaction } from '@/app/data/types';
 
 const PurchasesPage: React.FC = () => {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [loading, setLoading] = useState(true);
+    const [reviewModal, setReviewModal] = useState<{ listingId: number; itemName: string } | null>(
+        null
+    );
+    const [reviewRating, setReviewRating] = useState(5);
+    const [reviewText, setReviewText] = useState('');
+    const [reviewError, setReviewError] = useState('');
+    const [reviewSubmitting, setReviewSubmitting] = useState(false);
 
     useEffect(() => {
         const fetchTransactions = async (): Promise<void> => {
@@ -28,6 +35,40 @@ const PurchasesPage: React.FC = () => {
 
         fetchTransactions();
     }, []);
+
+    const handleReviewSubmit = async (): Promise<void> => {
+        if (!reviewModal) return;
+        setReviewError('');
+        setReviewSubmitting(true);
+        try {
+            const res = await fetch(`/api/products/${reviewModal.listingId}/reviews`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ rating: reviewRating, text: reviewText }),
+            });
+            const json = await res.json();
+            if (!res.ok || !json.success) {
+                setReviewError(json.message || 'Failed to submit review');
+            } else {
+                setReviewText('');
+                setReviewRating(5);
+                setReviewModal(null);
+                // Refresh transactions
+                const refreshRes = await fetch('/api/transactions/purchases');
+                if (refreshRes.ok) {
+                    const refreshJson = await refreshRes.json();
+                    if (refreshJson.success && refreshJson.data) {
+                        setTransactions(refreshJson.data);
+                    }
+                }
+            }
+        } catch (e) {
+            console.error(e);
+            setReviewError('Failed to submit review');
+        } finally {
+            setReviewSubmitting(false);
+        }
+    };
 
     if (loading) {
         return (
@@ -114,6 +155,22 @@ const PurchasesPage: React.FC = () => {
                                     </span>
                                 </div>
                             )}
+                            {!transaction.review_rating && (
+                                <button
+                                    onClick={() => {
+                                        setReviewModal({
+                                            listingId: transaction.listing_id,
+                                            itemName: transaction.item_name,
+                                        });
+                                        setReviewRating(5);
+                                        setReviewText('');
+                                        setReviewError('');
+                                    }}
+                                    className="mt-2 rounded-lg bg-blue-600 px-3 py-1 text-xs font-semibold text-white hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600"
+                                >
+                                    Add Review
+                                </button>
+                            )}
                         </div>
                     </div>
                     {transaction.review_text && (
@@ -128,6 +185,86 @@ const PurchasesPage: React.FC = () => {
                     )}
                 </div>
             ))}
+
+            {/* Review Modal */}
+            {reviewModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+                    <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl ring-1 ring-gray-100 dark:bg-gray-900 dark:ring-gray-700">
+                        <div className="mb-4 flex items-center justify-between">
+                            <div>
+                                <p className="text-xs font-semibold tracking-wide text-blue-600 uppercase dark:text-blue-200">
+                                    Review Product
+                                </p>
+                                <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                                    {reviewModal.itemName}
+                                </h3>
+                            </div>
+                            <button
+                                onClick={() => setReviewModal(null)}
+                                className="rounded-full border border-gray-200 p-2 hover:border-blue-400 dark:border-gray-700 dark:hover:border-blue-500"
+                            >
+                                <X className="h-4 w-4" />
+                            </button>
+                        </div>
+
+                        <div className="space-y-4">
+                            {reviewError && (
+                                <div className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800 ring-1 ring-red-200 dark:bg-red-900/20 dark:text-red-200 dark:ring-red-800/40">
+                                    {reviewError}
+                                </div>
+                            )}
+                            <div>
+                                <label className="mb-1 block text-sm font-medium text-gray-900 dark:text-white">
+                                    Rating
+                                </label>
+                                <select
+                                    value={reviewRating}
+                                    onChange={(e) => setReviewRating(Number(e.target.value))}
+                                    className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                                >
+                                    {[5, 4, 3, 2, 1].map((n) => (
+                                        <option
+                                            key={n}
+                                            value={n}
+                                        >
+                                            {n} - {'⭐'.repeat(n)}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div>
+                                <label className="mb-1 block text-sm font-medium text-gray-900 dark:text-white">
+                                    Comment
+                                </label>
+                                <textarea
+                                    value={reviewText}
+                                    onChange={(e) => setReviewText(e.target.value)}
+                                    rows={3}
+                                    className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                                    placeholder="Share your experience with this product"
+                                />
+                            </div>
+
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={handleReviewSubmit}
+                                    disabled={reviewSubmitting}
+                                    className="flex-1 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-400 dark:bg-blue-700 dark:hover:bg-blue-600"
+                                >
+                                    {reviewSubmitting ? 'Submitting...' : 'Submit Review'}
+                                </button>
+                                <button
+                                    onClick={() => setReviewModal(null)}
+                                    className="rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

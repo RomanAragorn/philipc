@@ -8,7 +8,7 @@ import Navigation from '@/app/components/Navigation';
 import Footer from '@/app/components/Footer';
 import Products from '@/app/components/products/Products';
 import SellerOffers from '@/app/components/products/SellerOffers';
-import { Product as ProductType, Seller, UserSession } from '@/app/data/types';
+import { Product as ProductType, Seller, UserSession, Review, Transaction } from '@/app/data/types';
 import {
     ChevronLeft,
     ChevronRight,
@@ -41,6 +41,12 @@ const ProductDetailPage: React.FC = () => {
     const [offerPrice, setOfferPrice] = useState('');
     const [offerError, setOfferError] = useState('');
     const [offerStatus, setOfferStatus] = useState<'idle' | 'success'>('idle');
+    const [reviews, setReviews] = useState<Review[]>([]);
+    const [canReview, setCanReview] = useState(false);
+    const [reviewRating, setReviewRating] = useState(5);
+    const [reviewText, setReviewText] = useState('');
+    const [reviewError, setReviewError] = useState('');
+    const [reviewSubmitting, setReviewSubmitting] = useState(false);
 
     useEffect(() => {
         if (!id) return;
@@ -48,10 +54,12 @@ const ProductDetailPage: React.FC = () => {
         const fetchProduct = async (): Promise<void> => {
             try {
                 // Fetch user session
+                let currentUser: UserSession | null = null;
                 const userRes = await fetch('/api/session');
                 if (userRes.ok) {
                     const userData = await userRes.json();
-                    setUser(userData.user || null);
+                    currentUser = userData.user || null;
+                    setUser(currentUser);
                 }
 
                 const res = await fetch(`/api/products/${id}`);
@@ -72,6 +80,22 @@ const ProductDetailPage: React.FC = () => {
                 const recData = await recRes.json();
 
                 setRecommendations(recData.data.products);
+
+                const reviewsRes = await fetch(`/api/products/${id}/reviews`);
+                if (reviewsRes.ok) {
+                    const reviewsJson = await reviewsRes.json();
+                    setReviews(reviewsJson.data || []);
+                }
+
+                if (currentUser) {
+                    const purchasesRes = await fetch('/api/transactions/purchases');
+                    if (purchasesRes.ok) {
+                        const purchasesJson = await purchasesRes.json();
+                        const userPurchases: Transaction[] = purchasesJson.data || [];
+                        const matching = userPurchases.find((t) => t.listing_id === Number(id));
+                        setCanReview(!!(matching && !matching.review_id));
+                    }
+                }
             } catch (error) {
                 console.error(error);
                 setProduct(null);
@@ -186,6 +210,37 @@ const ProductDetailPage: React.FC = () => {
         } catch (error) {
             console.error('Offer submission error:', error);
             setOfferError('Failed to submit offer');
+        }
+    };
+
+    const handleReviewSubmit = async (): Promise<void> => {
+        if (!product || !user) return;
+        setReviewError('');
+        setReviewSubmitting(true);
+        try {
+            const res = await fetch(`/api/products/${product.listing_id}/reviews`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ rating: reviewRating, text: reviewText }),
+            });
+            const json = await res.json();
+            if (!res.ok || !json.success) {
+                setReviewError(json.message || 'Failed to submit review');
+            } else {
+                setReviewText('');
+                setCanReview(false);
+                // Refresh reviews
+                const reviewsRes = await fetch(`/api/products/${product.listing_id}/reviews`);
+                if (reviewsRes.ok) {
+                    const reviewsJson = await reviewsRes.json();
+                    setReviews(reviewsJson.data || []);
+                }
+            }
+        } catch (e) {
+            console.error('Review submission error:', e);
+            setReviewError('Failed to submit review');
+        } finally {
+            setReviewSubmitting(false);
         }
     };
 
@@ -497,37 +552,104 @@ const ProductDetailPage: React.FC = () => {
                 )}
 
                 {/* Reviews */}
-                {/* <div className="mb-8 rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800">
+                <div className="mb-8 rounded-lg bg-white p-6 shadow-sm dark:bg-gray-800">
                     <h3 className="mb-4 text-xl font-semibold text-gray-900 dark:text-white">
                         Seller Reviews
                     </h3>
+
+                    {canReview && (
+                        <div className="mb-6 rounded-lg border border-gray-200 p-4 dark:border-gray-700">
+                            <h4 className="mb-3 text-lg font-semibold text-gray-900 dark:text-white">
+                                Add your review
+                            </h4>
+                            {reviewError && (
+                                <div className="mb-3 rounded bg-red-50 px-3 py-2 text-sm text-red-800 ring-1 ring-red-200 dark:bg-red-900/20 dark:text-red-200 dark:ring-red-800/40">
+                                    {reviewError}
+                                </div>
+                            )}
+                            <div className="mb-3">
+                                <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Rating
+                                </label>
+                                <select
+                                    value={reviewRating}
+                                    onChange={(e) => setReviewRating(Number(e.target.value))}
+                                    className="w-full rounded border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                                >
+                                    {[5, 4, 3, 2, 1].map((n) => (
+                                        <option
+                                            key={n}
+                                            value={n}
+                                        >
+                                            {n} - {'⭐'.repeat(n)}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="mb-3">
+                                <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    Comment
+                                </label>
+                                <textarea
+                                    rows={3}
+                                    value={reviewText}
+                                    onChange={(e) => setReviewText(e.target.value)}
+                                    className="w-full rounded border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                                    placeholder="Share your experience with this product"
+                                />
+                            </div>
+                            <button
+                                onClick={handleReviewSubmit}
+                                disabled={reviewSubmitting}
+                                className="rounded bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-400"
+                            >
+                                {reviewSubmitting ? 'Submitting...' : 'Submit Review'}
+                            </button>
+                        </div>
+                    )}
+
                     <div className="space-y-4">
-                        {product.map((review) => (
+                        {reviews.length === 0 && (
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                                No reviews yet.
+                            </p>
+                        )}
+                        {reviews.map((review) => (
                             <div
-                                key={review.id}
+                                key={review.review_id}
                                 className="border-b border-gray-200 pb-4 last:border-b-0 dark:border-gray-700"
                             >
                                 <div className="mb-2 flex items-center justify-between">
                                     <div className="flex items-center space-x-2">
                                         <span className="font-medium text-gray-900 dark:text-white">
-                                            {review.name}
+                                            {review.buyer_first_name}
                                         </span>
                                         <div className="flex">
                                             {[...Array(5)].map((_, i) => (
                                                 <Star
                                                     key={i}
-                                                    className={`h-4 w-4 ${i < review.rating ? 'fill-current text-yellow-400' : 'text-gray-300'}`}
+                                                    className={`h-4 w-4 ${
+                                                        i < (review.review_rating || 0)
+                                                            ? 'fill-current text-yellow-400'
+                                                            : 'text-gray-300'
+                                                    }`}
                                                 />
                                             ))}
                                         </div>
                                     </div>
-                                    <span className="text-sm text-gray-500">{review.date}</span>
+                                    {/* <span className="text-sm text-gray-500">
+                                        {new Date(
+                                            review.created_at as unknown as string
+                                        ).toLocaleDateString()}
+                                    </span> */}
                                 </div>
-                                <p className="text-gray-700 dark:text-gray-300">{review.comment}</p>
+                                <p className="text-gray-700 dark:text-gray-300">
+                                    {review.review_text}
+                                </p>
                             </div>
                         ))}
                     </div>
-                </div> */}
+                </div>
 
                 {/* Recommendations */}
                 {recommendations.length > 0 && (
