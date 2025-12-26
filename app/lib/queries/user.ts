@@ -92,7 +92,7 @@ export async function updateUser(id: number, username: string, email: string, pa
 
     for(let i = 0; i < attributes.length; i++) {
        
-        query += attributes[i];
+        query += attributes[i]; 
 
         if (attributes.length - 1 === i) {
             break;
@@ -117,8 +117,6 @@ export async function updateUser(id: number, username: string, email: string, pa
             }
         }
     }
-
-    console.log("gumana baksss");
     
     return {
         success : true,

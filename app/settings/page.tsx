@@ -2,6 +2,8 @@
 
 import React, { useState } from "react";
 import { UserSession, User} from '@/app/data/types';
+import Navigation from '@/app/components/Navigation';
+
 // etong function na to laman yung galing sa lib/queries, which is yung gumagawa ng sql update mismo 
 import { update } from './actions';
 
@@ -55,23 +57,28 @@ const CreateSettingsPage: React.FC = () => {
       
   return (
     <>
-      <div>Name: {userInfo?.first_name} {userInfo?.last_name}</div>
-      <div>Username: {userInfo?.username}</div>
-      <div>Email: {userInfo?.email}</div>
-      <div>Show password: {userInfo?.password}</div>
+      <div className="min-h-screen dark:bg-gray-800">
+        <Navigation />
+        <div className="mx-auto max-w-7xl p-6">
+          <div>Name: {userInfo?.first_name} {userInfo?.last_name}</div>
+          <div>Username: {userInfo?.username}</div>
+          <div>Email: {userInfo?.email}</div>
+          <div>Show password: {userInfo?.password}</div>
 
-      <form action={update}>
-        <input type="hidden" name="id" value={id ?? ""}></input>
-        <div className="row">
-          <input name="username" placeholder="Change username"></input><button>Change</button>
+          <form action={update}>
+            <input type="hidden" name="id" value={id ?? ""}></input>
+            <div className="row">
+              <input name="username" placeholder="Change username"></input><button>Change</button>
+            </div>
+            <div className="row">
+              <input name="email" placeholder="Change email"></input><button>Change</button>
+            </div>
+            <div className="row">
+              <input name="password" placeholder="Change password"></input><button>Change</button>
+            </div>
+          </form>
         </div>
-        <div className="row">
-          <input name="email" placeholder="Change email"></input><button>Change</button>
-        </div>
-        <div className="row">
-          <input name="password" placeholder="Change password"></input><button>Change</button>
-        </div>
-      </form>
+      </div>
     </>
     
   );
