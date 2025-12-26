@@ -122,9 +122,7 @@ const ProductReviews: React.FC<ProductReviewsProps> = ({
             )}
 
             <div className="space-y-4">
-                {reviews.length === 0 ? (
-                    <p className="text-sm text-gray-600 dark:text-gray-400">No reviews yet</p>
-                ) : (
+                {reviews.length > 0 &&
                     reviews.map((review) => (
                         <div
                             key={review.review_id}
@@ -153,8 +151,7 @@ const ProductReviews: React.FC<ProductReviewsProps> = ({
                                 {review.review_text}
                             </p>
                         </div>
-                    ))
-                )}
+                    ))}
             </div>
         </div>
     );
