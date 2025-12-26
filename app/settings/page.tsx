@@ -65,6 +65,12 @@ const CreateSettingsPage: React.FC = () => {
         <div className="row">
           <input name="username" placeholder="Change username"></input><button>Change</button>
         </div>
+        <div className="row">
+          <input name="email" placeholder="Change email"></input><button>Change</button>
+        </div>
+        <div className="row">
+          <input name="password" placeholder="Change password"></input><button>Change</button>
+        </div>
       </form>
     </>
     

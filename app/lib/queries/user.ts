@@ -80,13 +80,34 @@ export async function getUser(username: string): Promise<GetUserResponse> {
     };
 }
 
-export async function updateUser(id: number, username: string): Promise<UpdateUserResponse> {
+export async function updateUser(id: number, username: string, email: string, password: string): Promise<UpdateUserResponse> {
     
-    if(username) {
+    let query = ""; 
+    let attributes = [];
+    if (username) attributes.push(`username = '${username}'`);
+    if (email) attributes.push(`email = '${email}'`);
+    if (password) attributes.push(`password = '${password}'`);
+
+    console.log(attributes.length);
+
+    for(let i = 0; i < attributes.length; i++) {
+       
+        query += attributes[i];
+
+        if (attributes.length - 1 === i) {
+            break;
+        } else {
+            query += ', ';
+        }
+
+    }
+
+    query = `UPDATE users SET ${query} WHERE user_id = ${id}`;
+
+    console.log(query);
+    if(attributes.length > 0) {
         try {
-            console.log(id);
-            console.log(username);
-            await pool.execute("UPDATE users SET username = ? WHERE user_id = ?" , [username, id]);
+            await pool.execute(query);
             
         } catch(err) {
             console.log(err);
