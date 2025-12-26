@@ -3,29 +3,59 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Package } from 'lucide-react';
+import { Check, Package, X } from 'lucide-react';
 import { OfferWithDetails } from '@/app/data/types';
 
 const ReceivedOffersPage: React.FC = () => {
     const [offers, setOffers] = useState<OfferWithDetails[]>([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchOffers = async (): Promise<void> => {
-            try {
-                const res = await fetch('/api/transactions/received-offers');
-                if (!res.ok) throw new Error('Failed to fetch offers');
-                const json = await res.json();
-                if (json.success && json.data) {
-                    setOffers(json.data);
-                }
-            } catch (error) {
-                console.error('Error fetching received offers:', error);
-            } finally {
-                setLoading(false);
+    const fetchOffers = async (): Promise<void> => {
+        try {
+            const res = await fetch('/api/transactions/received-offers');
+            if (!res.ok) throw new Error('Failed to fetch offers');
+            const json = await res.json();
+            if (json.success && json.data) {
+                setOffers(json.data);
             }
-        };
+        } catch (error) {
+            console.error('Error fetching received offers:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
+    const handleOfferAction = async (
+        offerId: number,
+        action: 'accept' | 'reject',
+        listingId: number
+    ): Promise<void> => {
+        try {
+            const response = await fetch(`/api/products/${listingId}/offers`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    offer_id: offerId,
+                    status: action === 'accept' ? 'Accepted' : 'Rejected',
+                }),
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Refresh the offers list
+                await fetchOffers();
+            } else {
+                alert(data.message || `Failed to ${action} offer`);
+            }
+        } catch (err) {
+            console.error(`Error ${action}ing offer:`, err);
+            alert(`Failed to ${action} offer`);
+        } finally {
+        }
+    };
+
+    useEffect(() => {
         fetchOffers();
     }, []);
 
@@ -110,7 +140,7 @@ const ReceivedOffersPage: React.FC = () => {
                                 {new Date(offer.created_at).toLocaleDateString()}
                             </p>
                         </div>
-                        <div>
+                        <div className="flex flex-col items-end gap-2">
                             <span
                                 className={`rounded-full px-3 py-1 text-xs font-semibold ${
                                     offer.offer_status === 'Accepted'
@@ -122,6 +152,36 @@ const ReceivedOffersPage: React.FC = () => {
                             >
                                 {offer.offer_status}
                             </span>
+                            {offer.offer_status === 'Pending' && (
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={() =>
+                                            handleOfferAction(
+                                                offer.offer_id,
+                                                'accept',
+                                                offer.listing_id
+                                            )
+                                        }
+                                        className="flex items-center gap-1 rounded-lg bg-green-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-green-600 dark:hover:bg-green-700"
+                                    >
+                                        <Check className="h-4 w-4" />
+                                        Accept
+                                    </button>
+                                    <button
+                                        onClick={() =>
+                                            handleOfferAction(
+                                                offer.offer_id,
+                                                'reject',
+                                                offer.listing_id
+                                            )
+                                        }
+                                        className="flex items-center gap-1 rounded-lg bg-red-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-red-600 dark:hover:bg-red-700"
+                                    >
+                                        <X className="h-4 w-4" />
+                                        Reject
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
