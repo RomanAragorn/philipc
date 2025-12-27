@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { UserSession, User} from '@/app/data/types';
 import Navigation from '@/app/components/Navigation';
+import Button from '@/app/components/Button';
 
 // etong function na to laman yung galing sa lib/queries, which is yung gumagawa ng sql update mismo 
 import { update } from './actions';
@@ -12,8 +13,7 @@ import { update } from './actions';
 const CreateSettingsPage: React.FC = () => {
     const [user, setUser] = useState<UserSession | null>(null);
     const [userInfo, setUserInfo] = useState<User | null>(null);
-    const [username, setUsername] = useState<String>("");
-    const [id, setId] = useState<Number>();
+    const [id, setId] = useState<number | null>();
 
     // fetching session 
     React.useEffect(() => {
@@ -68,13 +68,16 @@ const CreateSettingsPage: React.FC = () => {
           <form action={update}>
             <input type="hidden" name="id" value={id ?? ""}></input>
             <div className="row">
-              <input name="username" placeholder="Change username"></input><button>Change</button>
+              <input name="username" placeholder="Change username"></input>
+              <Button label="Change username"></Button>
             </div>
             <div className="row">
-              <input name="email" placeholder="Change email"></input><button>Change</button>
+              <input name="email" placeholder="Change email"></input>
+              <Button label="Change email"></Button>
             </div>
             <div className="row">
-              <input name="password" placeholder="Change password"></input><button>Change</button>
+              <input name="password" placeholder="Change password"></input>
+              <Button label="Change password"></Button>
             </div>
           </form>
         </div>

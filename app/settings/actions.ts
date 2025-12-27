@@ -1,7 +1,6 @@
 'use server'
 
 import { updateUser } from '@/app/lib/queries/user';
-import { revalidatePath } from 'next/cache';
 
 export async function update(formData: FormData) {
   const id = Number(formData.get('id'));
@@ -10,6 +9,4 @@ export async function update(formData: FormData) {
   const password = String(formData.get('password')) ?? null;
 
   await updateUser(id, username, email, password);
-
-  revalidatePath('/settings');
 }
