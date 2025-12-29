@@ -80,13 +80,17 @@ export async function getUser(username: string): Promise<GetUserResponse> {
     };
 }
 
-export async function updateUser(id: number, username: string, email: string, password: string): Promise<UpdateUserResponse> {
+export async function updateUser(id: number, username: string, email: string, password: string, first_name: string, last_name: string, fb_link: string, contact_no: string): Promise<UpdateUserResponse> {
     
     let query = ""; 
     let attributes = [];
     if (username) attributes.push(`username = '${username}'`);
     if (email) attributes.push(`email = '${email}'`);
     if (password) attributes.push(`password = '${password}'`);
+    if (first_name) attributes.push(`first_name = '${first_name}'`);
+    if (last_name) attributes.push(`last_name = '${last_name}'`);
+    if (fb_link) attributes.push(`fb_link = '${fb_link}'`);
+    if (contact_no) attributes.push(`contact_no = '${contact_no}'`);
 
     console.log(attributes.length);
 
